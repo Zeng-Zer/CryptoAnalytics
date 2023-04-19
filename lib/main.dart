@@ -1,9 +1,12 @@
-import 'package:crypto_analytics/components/TextFieldOutlined.dart';
+import 'package:crypto_analytics/components/ZTextField.dart';
 import 'package:crypto_analytics/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:flex_color_scheme/flex_color_scheme.dart';
+
+import 'components/TextFieldFilled.dart';
 
 part 'main.g.dart';
 
@@ -42,15 +45,17 @@ class MyApp extends HookConsumerWidget {
           body: Column(
               children: [
                 SizedBox(height: 48),
-                TextFieldOutlined(
-                    label: 'label',
-                    hint: 'hint'
-                ),
-                SizedBox(height: 48),
-                TextFieldOutlined(
+                ZTextField(
+                  textFieldStyle: ZTextFieldStyle.filled,
                     label: 'label',
                     hint: 'hint',
-                  helper: 'helper'
+                    helper: 'helper'
+                ),
+                SizedBox(height: 48),
+                ZTextField(
+                    label: 'label',
+                    hint: 'hint',
+                    helper: 'helper'
                 )
               ]
           ),

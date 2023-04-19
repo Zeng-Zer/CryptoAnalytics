@@ -2,8 +2,13 @@ import 'package:flutter/material.dart';
 
 import '../theme.dart';
 
-class TextFieldOutlined extends StatefulWidget {
-  const TextFieldOutlined({
+enum ZTextFieldStyle {
+  outlined,
+  filled
+}
+
+class ZTextField extends StatefulWidget {
+  const ZTextField({
     super.key,
     required this.label,
     required this.hint,
@@ -14,6 +19,7 @@ class TextFieldOutlined extends StatefulWidget {
     this.textInputAction = TextInputAction.next,
     this.isPassword = false,
     this.obscureText = false,
+    this.textFieldStyle = ZTextFieldStyle.outlined,
   });
 
   final String label;
@@ -25,14 +31,25 @@ class TextFieldOutlined extends StatefulWidget {
   final TextInputAction textInputAction;
   final bool isPassword;
   final bool obscureText;
+  final ZTextFieldStyle textFieldStyle;
 
   @override
-  State<TextFieldOutlined> createState() => _TextFieldOutlined();
+  State<ZTextField> createState() => _TextFieldOutlined();
 }
 
-class _TextFieldOutlined extends State<TextFieldOutlined> {
+class _TextFieldOutlined extends State<ZTextField> {
   late bool obscureText;
   bool isTextEmpty = true;
+
+  InputBorder createBorder({
+    required BorderSide borderSide,
+    required BorderRadius borderRadius
+  }) {
+    if (widget.textFieldStyle == ZTextFieldStyle.outlined) {
+      return OutlineInputBorder(borderRadius: borderRadius, borderSide: borderSide);
+    }
+    return UnderlineInputBorder(borderRadius: borderRadius, borderSide: borderSide);
+  }
 
   @override
   void initState() {
@@ -49,35 +66,29 @@ class _TextFieldOutlined extends State<TextFieldOutlined> {
       }),
       controller: widget.controller,
       decoration: InputDecoration(
-        enabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: blueGrey.shade500),
+        enabledBorder: createBorder(
+          borderSide: BorderSide(color: blueGrey.shade300),
           borderRadius: BorderRadius.circular(8),
         ),
-        focusedBorder: OutlineInputBorder(
+        focusedBorder: createBorder(
           borderSide: BorderSide(color: theme().primaryColor),
           borderRadius: BorderRadius.circular(8),
         ),
-        errorBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: Colors.red),
+        errorBorder: createBorder(
+          borderSide: BorderSide(color: theme().colorScheme.error),
           borderRadius: BorderRadius.circular(8),
         ),
-        focusedErrorBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: Colors.red),
+        focusedErrorBorder: createBorder(
+          borderSide: BorderSide(color: theme().colorScheme.error),
           borderRadius: BorderRadius.circular(8),
         ),
         labelText: widget.label,
-        labelStyle: MaterialStateTextStyle.resolveWith((states) =>
-            textTheme().labelLarge!.copyWith(color: colorByStates(states))
-        ),
-        floatingLabelStyle: MaterialStateTextStyle.resolveWith((states) =>
-            textTheme().labelLarge!.copyWith(color: colorByStates(states))
-        ),
         floatingLabelBehavior: FloatingLabelBehavior.always,
         helperText: widget.helper,
         errorText: widget.helper,
         helperStyle: textTheme().bodySmall?.copyWith(height: 0.2, color: blueGrey.shade400),
         hintText: widget.hint,
-        hintStyle: const TextStyle(fontSize: 14, color: Colors.grey),
+        hintStyle: TextStyle(fontSize: 14, color: blueGrey.shade400),
         isDense: true,
         // contentPadding: const EdgeInsets.fromLTRB(4, 14, 24, 4),
         suffixIcon: widget.isPassword ? IconButton(
@@ -87,7 +98,7 @@ class _TextFieldOutlined extends State<TextFieldOutlined> {
               : const Icon(Icons.visibility),
         ) : null,
       ),
-      style: const TextStyle(fontSize: 14),
+      style: textTheme().bodyMedium,
       textAlignVertical: TextAlignVertical.center,
       focusNode: widget.focusNode,
       textInputAction: widget.textInputAction,
