@@ -5,9 +5,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../routing/app_router.dart';
 import 'sign_in_form.dart';
-import 'sign_up_form.dart';
 
-enum SignInState {
+enum SignState {
   signIn,
   signUp,
 }
@@ -34,18 +33,18 @@ class SignInWrapperScreen extends HookConsumerWidget {
           controller: pageController,
           scrollDirection: Axis.horizontal,
           children: [
-            SignInForm(
-              key: UniqueKey(),
+            SignForm(
+              signState: SignState.signIn,
               onSuccess: () => appRouter.replace(const HomeRoute()),
-              onSignUp: () {
+              onSignStateChange: () {
                 pageController.nextPage(
                     duration: const Duration(milliseconds: 340), curve: Curves.easeInOut);
               },
             ),
-            SignUpForm(
-              key: UniqueKey(),
+            SignForm(
+              signState: SignState.signUp,
               onSuccess: () => appRouter.replace(const HomeRoute()),
-              onSignIn: () {
+              onSignStateChange: () {
                 pageController.previousPage(
                     duration: const Duration(milliseconds: 340), curve: Curves.easeInOut);
               },

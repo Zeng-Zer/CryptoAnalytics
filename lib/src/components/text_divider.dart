@@ -7,7 +7,7 @@ class TextDivider extends StatelessWidget {
     this.color,
     this.innerPadding = 0,
     this.outerPadding = 0,
-    Key? key
+    Key? key,
   }) : super(key: key);
 
   final String text;
@@ -26,21 +26,20 @@ class TextDivider extends StatelessWidget {
       child: Row(
         children: [
           Expanded(
-              child: Container(
-                  padding: EdgeInsets.only(left: outerPadding, right: innerPadding),
-                child: Divider(color: dividerColor),
-              )
+            child: Container(
+              padding: EdgeInsets.only(left: outerPadding, right: innerPadding),
+              child: Divider(color: dividerColor),
+            ),
           ),
           Text(text, style: textStyle),
           Expanded(
-              child: Container(
-                padding: EdgeInsets.only(left: innerPadding, right: outerPadding),
-                child: Divider(color: dividerColor),
-              )
+            child: Container(
+              padding: EdgeInsets.only(left: innerPadding, right: outerPadding),
+              child: Divider(color: dividerColor),
+            ),
           ),
         ],
-      )
+      ),
     );
   }
-
 }

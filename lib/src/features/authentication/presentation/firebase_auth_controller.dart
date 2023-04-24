@@ -9,7 +9,7 @@ part 'firebase_auth_controller.g.dart';
 @riverpod
 class AuthController extends _$AuthController {
   @override
-  FutureOr<UserCredential?> build({SignInState? signInState}) {
+  FutureOr<UserCredential?> build({SignState? signState}) {
     return null;
   }
 

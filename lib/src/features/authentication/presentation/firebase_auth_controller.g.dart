@@ -6,7 +6,7 @@ part of 'firebase_auth_controller.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$authControllerHash() => r'2d3391fd77573c36ee8004aa872d84e536579df7';
+String _$authControllerHash() => r'a552fc75c10622d447874b8d60d7747de969660f';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -31,10 +31,10 @@ class _SystemHash {
 
 abstract class _$AuthController
     extends BuildlessAutoDisposeAsyncNotifier<UserCredential?> {
-  late final SignInState? signInState;
+  late final SignState? signState;
 
   FutureOr<UserCredential?> build({
-    SignInState? signInState,
+    SignState? signState,
   });
 }
 
@@ -49,10 +49,10 @@ class AuthControllerFamily extends Family<AsyncValue<UserCredential?>> {
 
   /// See also [AuthController].
   AuthControllerProvider call({
-    SignInState? signInState,
+    SignState? signState,
   }) {
     return AuthControllerProvider(
-      signInState: signInState,
+      signState: signState,
     );
   }
 
@@ -61,7 +61,7 @@ class AuthControllerFamily extends Family<AsyncValue<UserCredential?>> {
     covariant AuthControllerProvider provider,
   ) {
     return call(
-      signInState: provider.signInState,
+      signState: provider.signState,
     );
   }
 
@@ -85,9 +85,9 @@ class AuthControllerProvider extends AutoDisposeAsyncNotifierProviderImpl<
     AuthController, UserCredential?> {
   /// See also [AuthController].
   AuthControllerProvider({
-    this.signInState,
+    this.signState,
   }) : super.internal(
-          () => AuthController()..signInState = signInState,
+          () => AuthController()..signState = signState,
           from: authControllerProvider,
           name: r'authControllerProvider',
           debugGetCreateSourceHash:
@@ -99,17 +99,17 @@ class AuthControllerProvider extends AutoDisposeAsyncNotifierProviderImpl<
               AuthControllerFamily._allTransitiveDependencies,
         );
 
-  final SignInState? signInState;
+  final SignState? signState;
 
   @override
   bool operator ==(Object other) {
-    return other is AuthControllerProvider && other.signInState == signInState;
+    return other is AuthControllerProvider && other.signState == signState;
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, signInState.hashCode);
+    hash = _SystemHash.combine(hash, signState.hashCode);
 
     return _SystemHash.finish(hash);
   }
@@ -119,7 +119,7 @@ class AuthControllerProvider extends AutoDisposeAsyncNotifierProviderImpl<
     covariant AuthController notifier,
   ) {
     return notifier.build(
-      signInState: signInState,
+      signState: signState,
     );
   }
 }

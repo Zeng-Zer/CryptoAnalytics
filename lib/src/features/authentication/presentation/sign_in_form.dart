@@ -10,26 +10,31 @@ import '../utils/validators.dart';
 import 'firebase_auth_controller.dart';
 import 'sign_in_wrapper_screen.dart';
 
-class SignInForm extends HookConsumerWidget {
-  const SignInForm({
+class SignForm extends HookConsumerWidget {
+  const SignForm({
     Key? key,
     required this.onSuccess,
-    required this.onSignUp,
+    required this.onSignStateChange,
+    required this.signState,
   }) : super(key: key);
 
   final void Function() onSuccess;
-  final void Function() onSignUp;
+  final void Function() onSignStateChange;
+  final SignState signState;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     useAutomaticKeepAlive();
-    final authCtrlProvider = authControllerProvider(signInState: SignInState.signIn);
+    final authCtrlProvider = authControllerProvider(signState: signState);
     final authController = ref.watch(authCtrlProvider);
 
-    final formKey = useMemoized(GlobalKey<FormState>.new, const []);
+    final formKey = useMemoized(GlobalKey<FormState>.new, [signState]);
+
+    final nameController = useTextEditingController();
     final emailController = useTextEditingController();
     final passwordController = useTextEditingController();
 
+    final nameFocusNode = useFocusNode();
     final emailFocusNode = useFocusNode();
     final passwordFocusNode = useFocusNode();
 
@@ -39,6 +44,150 @@ class SignInForm extends HookConsumerWidget {
     unfocus() {
       emailFocusNode.unfocus();
       passwordFocusNode.unfocus();
+      nameFocusNode.unfocus();
+    }
+
+    buildNameTextField() {
+      if (signState == SignState.signIn) return [];
+      return [
+        ZTextField(
+          label: 'Name',
+          hint: 'David',
+          controller: nameController,
+          focusNode: nameFocusNode,
+          validator: nameValidator,
+          keyboardType: TextInputType.name,
+          textInputAction: TextInputAction.next,
+          autovalidateMode: autovalidateMode,
+        ),
+        const SizedBox(height: 16),
+      ];
+    }
+
+    buildEmailAndPasswordTextField() {
+      return [
+        ZTextField(
+          label: 'Email',
+          hint: 'toto@google.com',
+          controller: emailController,
+          focusNode: emailFocusNode,
+          validator: emailValidator,
+          autovalidateMode: autovalidateMode,
+          keyboardType: TextInputType.emailAddress,
+          textInputAction: TextInputAction.next,
+        ),
+        const SizedBox(height: 16),
+        ZTextField(
+          label: 'Password',
+          hint: '8 characters minimum',
+          controller: passwordController,
+          focusNode: passwordFocusNode,
+          isPassword: true,
+          obscureText: true,
+          validator: passwordValidator,
+          autovalidateMode: autovalidateMode,
+          textInputAction: TextInputAction.next,
+        ),
+        const SizedBox(height: 16),
+      ];
+    }
+
+    buildSubmitButton() {
+      signUpOrIn(String email, String password) {
+        final notifier = ref.read(authCtrlProvider.notifier);
+        return signState == SignState.signIn
+            ? notifier.signInWithEmailAndPassword(email: email, password: password)
+            : notifier.createUserWithEmailAndPassword(email: email, password: password);
+      }
+
+      onPressed() async {
+        if (formKey.currentState!.validate()) {
+          unfocus();
+          final signedIn = await signUpOrIn(emailController.text.trim(), passwordController.text);
+          if (signedIn) onSuccess();
+        }
+        touched.value = true;
+      }
+
+      return [
+        FilledButton(
+          onPressed: (authController.isLoading) ? null : onPressed,
+          style: FilledButton.styleFrom(
+            padding: const EdgeInsets.only(top: 16, bottom: 16, left: 32, right: 32),
+          ),
+          child: Center(
+            child: authController.map(
+              data: (_) => const Text('Login', textAlign: TextAlign.center),
+              error: (e) => const Text('Login', textAlign: TextAlign.center),
+              loading: (_) => const SizedBox(
+                height: 20,
+                width: 20,
+                child: CircularProgressIndicator(),
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 8),
+      ];
+    }
+
+    buildErrorMessage() {
+      if (!authController.hasError) return [];
+      return [
+        Text(
+          authController.error.toString(),
+          style: textTheme().bodySmall?.copyWith(color: theme().colorScheme.error),
+        ),
+        const SizedBox(height: 8),
+      ];
+    }
+
+    buildOAuthButtons() {
+      return [
+        FilledButton(
+          onPressed: () {
+            unfocus();
+          },
+          style: FilledButton.styleFrom(
+            padding: const EdgeInsets.fromLTRB(32, 16, 32, 16),
+            backgroundColor: theme().buttonTheme.colorScheme?.secondary,
+          ),
+          child: Center(
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: const [
+                Icon(Icons.facebook),
+                SizedBox(width: 16),
+                Text('Continue with Facebook'),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(height: 8),
+      ];
+    }
+
+    buildAlreadyAccount() {
+      final alreadyAccountText = signState == SignState.signIn
+          ? 'Don\'t have an account ? '
+          : 'Already have an account ? ';
+      final signText = signState == SignState.signIn ? 'Sign Up' : 'Sign In';
+
+      return Center(
+        child: RichText(
+          text: TextSpan(
+            text: alreadyAccountText,
+            style: textTheme().bodyMedium?.copyWith(color: Colors.black),
+            children: [
+              TextSpan(
+                text: signText,
+                style: textTheme().bodyMedium?.copyWith(color: Colors.lightBlueAccent),
+                recognizer: TapGestureRecognizer()..onTap = onSignStateChange,
+              ),
+            ],
+          ),
+        ),
+      );
     }
 
     return Padding(
@@ -48,99 +197,14 @@ class SignInForm extends HookConsumerWidget {
           key: formKey,
           child: Column(
             children: [
-              ZTextField(
-                label: 'Email',
-                hint: 'toto@google.com',
-                controller: emailController,
-                focusNode: emailFocusNode,
-                validator: emailValidator,
-                autovalidateMode: autovalidateMode,
-                keyboardType: TextInputType.emailAddress,
-                textInputAction: TextInputAction.next,
-              ),
-              const SizedBox(height: 16),
-              ZTextField(
-                label: 'Password',
-                hint: '8 characters minimum',
-                controller: passwordController,
-                focusNode: passwordFocusNode,
-                isPassword: true,
-                obscureText: true,
-                validator: passwordValidator,
-                autovalidateMode: autovalidateMode,
-                textInputAction: TextInputAction.next,
-              ),
-              const SizedBox(height: 16),
-              FilledButton(
-                onPressed: (authController.isLoading)
-                    ? null
-                    : () async {
-                        if (formKey.currentState!.validate()) {
-                          unfocus();
-
-                          final signedIn =
-                              await ref.read(authCtrlProvider.notifier).signInWithEmailAndPassword(
-                                    email: emailController.text.trim(),
-                                    password: passwordController.text,
-                                  );
-                          if (signedIn) onSuccess();
-                        }
-                        touched.value = true;
-                      },
-                style: FilledButton.styleFrom(
-                  padding: const EdgeInsets.only(top: 16, bottom: 16, left: 32, right: 32),
-                  // backgroundColor: MyTheme.get().buttonTheme.colorScheme?.primary,
-                ),
-                child: Center(
-                  child: authController.map(
-                    data: (_) => const Text('Login', textAlign: TextAlign.center),
-                    error: (e) => const Text('Login', textAlign: TextAlign.center),
-                    loading: (_) => const SizedBox(
-                      height: 20,
-                      width: 20,
-                      child: CircularProgressIndicator(),
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 8),
-              authController.hasError
-                  ? Text(authController.error.toString(),
-                      style: textTheme().bodySmall?.copyWith(color: theme().colorScheme.error))
-                  : const SizedBox.shrink(),
-              const SizedBox(height: 8),
+              ...buildNameTextField(),
+              ...buildEmailAndPasswordTextField(),
+              ...buildSubmitButton(),
+              ...buildErrorMessage(),
               const TextDivider(text: 'or', innerPadding: 8, outerPadding: 8),
               const SizedBox(height: 8),
-              FilledButton(
-                onPressed: () {
-                  unfocus();
-                },
-                style: FilledButton.styleFrom(
-                  padding: const EdgeInsets.fromLTRB(32, 16, 32, 16),
-                  backgroundColor: theme().buttonTheme.colorScheme?.secondary,
-                ),
-                child: Center(
-                  child: Row(mainAxisSize: MainAxisSize.min, children: const [
-                    Icon(Icons.facebook),
-                    SizedBox(width: 16),
-                    Text('Continue with Facebook'),
-                  ]),
-                ),
-              ),
-              const SizedBox(height: 8),
-              Center(
-                  child: RichText(
-                text: TextSpan(
-                    text: "Don't have an account ? ",
-                    style: textTheme().bodyMedium?.copyWith(color: Colors.black),
-                    children: [
-                      TextSpan(
-                        text: 'Sign Up',
-                        style: textTheme().bodyMedium?.copyWith(color: Colors.lightBlueAccent),
-                        recognizer: TapGestureRecognizer()..onTap = onSignUp,
-                      )
-                    ]),
-              )),
+              ...buildOAuthButtons(),
+              buildAlreadyAccount(),
             ],
           ),
         ),
