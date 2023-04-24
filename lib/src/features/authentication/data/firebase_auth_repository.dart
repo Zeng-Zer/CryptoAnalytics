@@ -19,6 +19,13 @@ class AuthRepository {
     return auth.signInWithEmailAndPassword(email: email, password: password);
   }
 
+  Future<UserCredential> createUserWithEmailAndPassword({
+    required String email,
+    required String password,
+  }) {
+    return auth.createUserWithEmailAndPassword(email: email, password: password);
+  }
+
   Future<void> signInAnonymously() {
     return auth.signInAnonymously();
   }

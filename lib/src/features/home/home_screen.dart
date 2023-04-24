@@ -1,9 +1,9 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:crypto_analytics/src/features/authentication/data/firebase_auth_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../routing/app_router.dart';
+import '../authentication/data/firebase_auth_repository.dart';
 
 @RoutePage()
 class HomeScreen extends ConsumerStatefulWidget {
@@ -24,7 +24,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       body: Center(
         child: Column(
           children: [
-            Text('Hello world'),
+            Text('Hello world ${authRepository.currentUser?.email}'),
             ElevatedButton(
               onPressed: () async {
                 await authRepository.signOut();

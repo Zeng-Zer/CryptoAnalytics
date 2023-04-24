@@ -5,9 +5,11 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../components/text_divider.dart';
 import '../../../components/z_text_field.dart';
-import '../../../routing/app_router.dart';
 import '../../../theme.dart';
+import '../data/firebase_auth_repository.dart';
+import '../utils/validators.dart';
 import 'firebase_auth_controller.dart';
+import 'sign_in_wrapper_screen.dart';
 
 class SignUpForm extends HookConsumerWidget {
   const SignUpForm({
@@ -22,16 +24,22 @@ class SignUpForm extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     useAutomaticKeepAlive();
-    final authController = ref.watch(authControllerProvider);
-    final appRouter = ref.watch(appRouterProvider);
-
     final formKey = useMemoized(GlobalKey<FormState>.new, const []);
+
+    final authCtrlProvider = authControllerProvider(signInState: SignInState.signUp);
+    final authController = ref.watch(authCtrlProvider);
+    final authRepo = ref.watch(authRepositoryProvider);
+
     final nameController = useTextEditingController();
     final emailController = useTextEditingController();
     final passwordController = useTextEditingController();
+
     final nameFocusNode = useFocusNode();
     final emailFocusNode = useFocusNode();
     final passwordFocusNode = useFocusNode();
+
+    final touched = useState(false);
+    final autovalidateMode = touched.value ? AutovalidateMode.onUserInteraction : null;
 
     unfocus() {
       nameFocusNode.unfocus();
@@ -51,17 +59,23 @@ class SignUpForm extends HookConsumerWidget {
                 hint: 'David',
                 controller: nameController,
                 focusNode: nameFocusNode,
+                validator: nameValidator,
+                keyboardType: TextInputType.name,
                 textInputAction: TextInputAction.next,
+                autovalidateMode: autovalidateMode,
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 16),
               ZTextField(
                 label: 'Email',
                 hint: 'toto@google.com',
                 controller: emailController,
                 focusNode: emailFocusNode,
+                validator: emailValidator,
+                keyboardType: TextInputType.emailAddress,
                 textInputAction: TextInputAction.next,
+                autovalidateMode: autovalidateMode,
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 16),
               ZTextField(
                 label: 'Password',
                 hint: '8 characters minimum',
@@ -70,8 +84,10 @@ class SignUpForm extends HookConsumerWidget {
                 isPassword: true,
                 obscureText: true,
                 textInputAction: TextInputAction.next,
+                validator: passwordValidator,
+                autovalidateMode: autovalidateMode,
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 16),
               FilledButton(
                 onPressed: (authController.isLoading)
                     ? null
@@ -79,14 +95,19 @@ class SignUpForm extends HookConsumerWidget {
                         if (formKey.currentState!.validate()) {
                           unfocus();
 
-                          await ref
-                              .read(authControllerProvider.notifier)
-                              .signInWithEmailAndPassword(
-                                email: emailController.value.text,
-                                password: passwordController.value.text,
+                          final signedIn = await ref
+                              .read(authCtrlProvider.notifier)
+                              .createUserWithEmailAndPassword(
+                                email: emailController.text.trim(),
+                                password: passwordController.text,
                               );
-                          // onSuccess();
+
+                          if (signedIn) {
+                            authRepo.currentUser?.updateDisplayName(nameController.text.trim());
+                            onSuccess();
+                          }
                         }
+                        touched.value = true;
                       },
                 style: FilledButton.styleFrom(
                   padding: const EdgeInsets.only(top: 16, bottom: 16, left: 32, right: 32),
@@ -94,7 +115,7 @@ class SignUpForm extends HookConsumerWidget {
                 ),
                 child: Center(
                   child: authController.map(
-                    data: (_) => const Text('Login', textAlign: TextAlign.center),
+                    data: (_) => const Text('Register', textAlign: TextAlign.center),
                     error: (e) => Text(e.error.toString()),
                     loading: (_) => const SizedBox(
                       height: 20,
@@ -127,11 +148,11 @@ class SignUpForm extends HookConsumerWidget {
               Center(
                   child: RichText(
                 text: TextSpan(
-                    text: "Don't have an account ? ",
+                    text: 'Already have an account ? ',
                     style: textTheme().bodyMedium?.copyWith(color: Colors.black),
                     children: [
                       TextSpan(
-                        text: 'Sign Up',
+                        text: 'Sign In',
                         style: textTheme().bodyMedium?.copyWith(color: Colors.lightBlueAccent),
                         recognizer: TapGestureRecognizer()..onTap = onSignIn,
                       )

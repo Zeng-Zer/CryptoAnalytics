@@ -14,6 +14,8 @@ class ZTextField extends HookWidget {
     this.controller,
     this.focusNode,
     this.validator,
+    this.keyboardType,
+    this.autovalidateMode,
     this.textInputAction = TextInputAction.next,
     this.isPassword = false,
     this.obscureText = false,
@@ -29,6 +31,8 @@ class ZTextField extends HookWidget {
   final TextInputAction textInputAction;
   final bool isPassword;
   final bool obscureText;
+  final AutovalidateMode? autovalidateMode;
+  final TextInputType? keyboardType;
   final ZTextFieldStyle textFieldStyle;
 
   InputBorder createBorder({required BorderSide borderSide, required BorderRadius borderRadius}) {
@@ -68,8 +72,9 @@ class ZTextField extends HookWidget {
         labelText: label,
         floatingLabelBehavior: FloatingLabelBehavior.always,
         helperText: helper,
-        errorText: helper,
         helperStyle: textTheme().bodySmall?.copyWith(height: 0.2, color: blueGrey.shade400),
+        errorText: helper,
+        errorStyle: textTheme().labelSmall?.copyWith(height: 0.2, color: theme().colorScheme.error),
         hintText: hint,
         hintStyle: TextStyle(fontSize: 14, color: blueGrey.shade400),
         isDense: true,
@@ -89,6 +94,8 @@ class ZTextField extends HookWidget {
       textInputAction: textInputAction,
       obscureText: shouldObscure.value,
       validator: validator,
+      keyboardType: keyboardType,
+      autovalidateMode: autovalidateMode,
     );
   }
 }

@@ -6,7 +6,9 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../components/text_divider.dart';
 import '../../../components/z_text_field.dart';
 import '../../../theme.dart';
+import '../utils/validators.dart';
 import 'firebase_auth_controller.dart';
+import 'sign_in_wrapper_screen.dart';
 
 class SignInForm extends HookConsumerWidget {
   const SignInForm({
@@ -21,17 +23,20 @@ class SignInForm extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     useAutomaticKeepAlive();
-    final authController = ref.watch(authControllerProvider);
+    final authCtrlProvider = authControllerProvider(signInState: SignInState.signIn);
+    final authController = ref.watch(authCtrlProvider);
 
     final formKey = useMemoized(GlobalKey<FormState>.new, const []);
     final emailController = useTextEditingController();
     final passwordController = useTextEditingController();
-    final nameFocusNode = useFocusNode();
+
     final emailFocusNode = useFocusNode();
     final passwordFocusNode = useFocusNode();
 
+    final touched = useState(false);
+    final autovalidateMode = touched.value ? AutovalidateMode.onUserInteraction : null;
+
     unfocus() {
-      nameFocusNode.unfocus();
       emailFocusNode.unfocus();
       passwordFocusNode.unfocus();
     }
@@ -48,9 +53,12 @@ class SignInForm extends HookConsumerWidget {
                 hint: 'toto@google.com',
                 controller: emailController,
                 focusNode: emailFocusNode,
+                validator: emailValidator,
+                autovalidateMode: autovalidateMode,
+                keyboardType: TextInputType.emailAddress,
                 textInputAction: TextInputAction.next,
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 16),
               ZTextField(
                 label: 'Password',
                 hint: '8 characters minimum',
@@ -58,9 +66,11 @@ class SignInForm extends HookConsumerWidget {
                 focusNode: passwordFocusNode,
                 isPassword: true,
                 obscureText: true,
+                validator: passwordValidator,
+                autovalidateMode: autovalidateMode,
                 textInputAction: TextInputAction.next,
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 16),
               FilledButton(
                 onPressed: (authController.isLoading)
                     ? null
@@ -68,14 +78,14 @@ class SignInForm extends HookConsumerWidget {
                         if (formKey.currentState!.validate()) {
                           unfocus();
 
-                          final signedIn = await ref
-                              .read(authControllerProvider.notifier)
-                              .signInWithEmailAndPassword(
-                                email: emailController.value.text,
-                                password: passwordController.value.text,
-                              );
+                          final signedIn =
+                              await ref.read(authCtrlProvider.notifier).signInWithEmailAndPassword(
+                                    email: emailController.text.trim(),
+                                    password: passwordController.text,
+                                  );
                           if (signedIn) onSuccess();
                         }
+                        touched.value = true;
                       },
                 style: FilledButton.styleFrom(
                   padding: const EdgeInsets.only(top: 16, bottom: 16, left: 32, right: 32),
@@ -84,7 +94,7 @@ class SignInForm extends HookConsumerWidget {
                 child: Center(
                   child: authController.map(
                     data: (_) => const Text('Login', textAlign: TextAlign.center),
-                    error: (e) => Text(e.error.toString()),
+                    error: (e) => const Text('Login', textAlign: TextAlign.center),
                     loading: (_) => const SizedBox(
                       height: 20,
                       width: 20,
@@ -93,6 +103,11 @@ class SignInForm extends HookConsumerWidget {
                   ),
                 ),
               ),
+              const SizedBox(height: 8),
+              authController.hasError
+                  ? Text(authController.error.toString(),
+                      style: textTheme().bodySmall?.copyWith(color: theme().colorScheme.error))
+                  : const SizedBox.shrink(),
               const SizedBox(height: 8),
               const TextDivider(text: 'or', innerPadding: 8, outerPadding: 8),
               const SizedBox(height: 8),
