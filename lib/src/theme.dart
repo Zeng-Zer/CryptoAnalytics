@@ -1,9 +1,9 @@
+import 'package:crypto_analytics/src/routing/app_router.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-final navigatorKey = GlobalKey<NavigatorState>();
-
+// TODO PROVIDer
 ThemeData theme() => Theme.of(navigatorKey.currentState!.overlay!.context);
 TextTheme textTheme() => Theme.of(navigatorKey.currentState!.overlay!.context).textTheme;
 // Color colorByStates(Set<MaterialState> states, { Color? main }) {
@@ -79,7 +79,6 @@ TextTheme createTextTheme() {
 ThemeData createTheme() {
   return light;
 }
-
 
 ThemeData light = FlexThemeData.light(
   colors: const FlexSchemeColor(

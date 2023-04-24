@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 
 import '../theme.dart';
 
-enum ZTextFieldStyle {
-  outlined,
-  filled
-}
+enum ZTextFieldStyle { outlined, filled }
 
-class ZTextField extends StatefulWidget {
+class ZTextField extends HookWidget {
   const ZTextField({
     super.key,
-    required this.label,
-    required this.hint,
+    this.label,
+    this.hint,
     this.helper,
     this.controller,
     this.focusNode,
@@ -22,8 +20,8 @@ class ZTextField extends StatefulWidget {
     this.textFieldStyle = ZTextFieldStyle.outlined,
   });
 
-  final String label;
-  final String hint;
+  final String? label;
+  final String? hint;
   final String? helper;
   final TextEditingController? controller;
   final FocusNode? focusNode;
@@ -33,38 +31,23 @@ class ZTextField extends StatefulWidget {
   final bool obscureText;
   final ZTextFieldStyle textFieldStyle;
 
-  @override
-  State<ZTextField> createState() => _TextFieldOutlined();
-}
-
-class _TextFieldOutlined extends State<ZTextField> {
-  late bool obscureText;
-  bool isTextEmpty = true;
-
-  InputBorder createBorder({
-    required BorderSide borderSide,
-    required BorderRadius borderRadius
-  }) {
-    if (widget.textFieldStyle == ZTextFieldStyle.outlined) {
+  InputBorder createBorder({required BorderSide borderSide, required BorderRadius borderRadius}) {
+    if (textFieldStyle == ZTextFieldStyle.outlined) {
       return OutlineInputBorder(borderRadius: borderRadius, borderSide: borderSide);
     }
     return UnderlineInputBorder(borderRadius: borderRadius, borderSide: borderSide);
   }
 
   @override
-  void initState() {
-    obscureText = widget.obscureText;
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final shouldObscure = useState(obscureText);
+    final isTextEmpty = useState(true);
     return TextFormField(
-      onChanged: (text) => setState(() {
-        isTextEmpty = text.isEmpty;
-        obscureText = isTextEmpty && widget.isPassword ? true : obscureText;
-      }),
-      controller: widget.controller,
+      onChanged: (text) {
+        isTextEmpty.value = text.isEmpty;
+        shouldObscure.value = isTextEmpty.value && isPassword ? true : shouldObscure.value;
+      },
+      controller: controller,
       decoration: InputDecoration(
         enabledBorder: createBorder(
           borderSide: BorderSide(color: blueGrey.shade300),
@@ -82,28 +65,30 @@ class _TextFieldOutlined extends State<ZTextField> {
           borderSide: BorderSide(color: theme().colorScheme.error),
           borderRadius: BorderRadius.circular(8),
         ),
-        labelText: widget.label,
+        labelText: label,
         floatingLabelBehavior: FloatingLabelBehavior.always,
-        helperText: widget.helper,
-        errorText: widget.helper,
+        helperText: helper,
+        errorText: helper,
         helperStyle: textTheme().bodySmall?.copyWith(height: 0.2, color: blueGrey.shade400),
-        hintText: widget.hint,
+        hintText: hint,
         hintStyle: TextStyle(fontSize: 14, color: blueGrey.shade400),
         isDense: true,
-        // contentPadding: const EdgeInsets.fromLTRB(4, 14, 24, 4),
-        suffixIcon: widget.isPassword ? IconButton(
-          onPressed: isTextEmpty ? null : () => setState(() => obscureText = !obscureText),
-          icon: obscureText
-              ? const Icon(Icons.visibility_off)
-              : const Icon(Icons.visibility),
-        ) : null,
+        suffixIcon: isPassword
+            ? IconButton(
+                onPressed:
+                    isTextEmpty.value ? null : () => shouldObscure.value = !shouldObscure.value,
+                icon: shouldObscure.value
+                    ? const Icon(Icons.visibility_off)
+                    : const Icon(Icons.visibility),
+              )
+            : null,
       ),
       style: textTheme().bodyMedium,
       textAlignVertical: TextAlignVertical.center,
-      focusNode: widget.focusNode,
-      textInputAction: widget.textInputAction,
-      obscureText: obscureText,
-      validator: widget.validator,
+      focusNode: focusNode,
+      textInputAction: textInputAction,
+      obscureText: shouldObscure.value,
+      validator: validator,
     );
   }
 }

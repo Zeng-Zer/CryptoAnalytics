@@ -1,65 +1,20 @@
-import 'package:crypto_analytics/components/ZTextField.dart';
-import 'package:crypto_analytics/theme.dart';
+import 'package:crypto_analytics/src/app.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:flex_color_scheme/flex_color_scheme.dart';
 
-import 'components/TextFieldFilled.dart';
+import 'firebase_options.dart';
 
-part 'main.g.dart';
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
 
-// We create a "provider", which will store a value (here "Hello world").
-// By using a provider, this allows us to mock/override the value exposed.
-@riverpod
-String helloWorld(HelloWorldRef ref) {
-  return 'Hello world';
-}
-
-void main() {
-  runApp(
-    // For widgets to be able to read providers, we need to wrap the entire
-    // application in a "ProviderScope" widget.
-    // This is where the state of our providers will be stored.
-    ProviderScope(
-      child: MyApp(),
-    ),
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
   );
-}
+  await FirebaseAuth.instance.useAuthEmulator('9ef2-89-3-226-208.ngrok-free.app', 80);
 
-// Extend HookConsumerWidget instead of HookWidget, which is exposed by Riverpod
-class MyApp extends HookConsumerWidget {
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    // We can use hooks inside HookConsumerWidget
-    final counter = useState(0);
-
-    final String value = ref.watch(helloWorldProvider);
-
-    return MaterialApp(
-        navigatorKey: navigatorKey,
-        theme: createTheme(),
-        home: Scaffold(
-          appBar: AppBar(title: const Text('Example')),
-          body: Column(
-              children: [
-                SizedBox(height: 48),
-                ZTextField(
-                  textFieldStyle: ZTextFieldStyle.filled,
-                    label: 'label',
-                    hint: 'hint',
-                    helper: 'helper'
-                ),
-                SizedBox(height: 48),
-                ZTextField(
-                    label: 'label',
-                    hint: 'hint',
-                    helper: 'helper'
-                )
-              ]
-          ),
-        )
-    );
-  }
+  runApp(const ProviderScope(
+    child: MyApp(),
+  ));
 }
