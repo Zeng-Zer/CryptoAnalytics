@@ -25,9 +25,6 @@ class SignForm extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     useAutomaticKeepAlive();
-    final authCtrlProvider = authControllerProvider(signState: signState);
-    final authController = ref.watch(authCtrlProvider);
-
     final formKey = useMemoized(GlobalKey<FormState>.new, [signState]);
 
     final nameController = useTextEditingController();
@@ -93,6 +90,9 @@ class SignForm extends HookConsumerWidget {
     }
 
     buildSubmitButton() {
+      final authCtrlProvider = authControllerProvider(signState: signState);
+      final authController = ref.watch(authCtrlProvider);
+
       signUpOrIn(String email, String password) {
         final notifier = ref.read(authCtrlProvider.notifier);
         return signState == SignState.signIn
@@ -119,30 +119,27 @@ class SignForm extends HookConsumerWidget {
             child: authController.map(
               data: (_) => const Text('Login', textAlign: TextAlign.center),
               error: (e) => const Text('Login', textAlign: TextAlign.center),
-              loading: (_) => const SizedBox(
-                height: 20,
-                width: 20,
-                child: CircularProgressIndicator(),
-              ),
+              loading: (_) =>
+                  const SizedBox(height: 20, width: 20, child: CircularProgressIndicator()),
             ),
           ),
         ),
         const SizedBox(height: 8),
-      ];
-    }
-
-    buildErrorMessage() {
-      if (!authController.hasError) return [];
-      return [
-        Text(
-          authController.error.toString(),
-          style: textTheme().bodySmall?.copyWith(color: theme().colorScheme.error),
-        ),
-        const SizedBox(height: 8),
+        if (authController.hasError) ...[
+          Text(
+            authController.error.toString(),
+            style: textTheme().bodySmall?.copyWith(color: theme().colorScheme.error),
+          ),
+          const SizedBox(height: 8),
+        ]
       ];
     }
 
     buildOAuthButtons() {
+      final ctrlProvider = anonymousButtonControllerProvider(signState: signState);
+      final ctrl = ref.watch(ctrlProvider);
+      final notifier = ref.read(ctrlProvider.notifier);
+
       return [
         FilledButton(
           onPressed: () {
@@ -164,6 +161,27 @@ class SignForm extends HookConsumerWidget {
           ),
         ),
         const SizedBox(height: 8),
+        ElevatedButton(
+          onPressed: () async {
+            unfocus();
+            await notifier.signInAnonymously();
+            onSuccess();
+          },
+          style: FilledButton.styleFrom(
+            padding: const EdgeInsets.fromLTRB(32, 16, 32, 16),
+            // backgroundColor: theme().buttonTheme.colorScheme?.secondary,
+          ),
+          child: Center(
+            child: ctrl.map(
+              data: (data) => const Text('Continue anonymously'),
+              error: (err) => const Text('Continue anonymously'),
+              loading: (_) =>
+                  const SizedBox(height: 20, width: 20, child: CircularProgressIndicator()),
+            ),
+            // child: Text('Continue anonymously'),
+          ),
+        ),
+        const SizedBox(height: 8),
       ];
     }
 
@@ -182,7 +200,11 @@ class SignForm extends HookConsumerWidget {
               TextSpan(
                 text: signText,
                 style: textTheme().bodyMedium?.copyWith(color: Colors.lightBlueAccent),
-                recognizer: TapGestureRecognizer()..onTap = onSignStateChange,
+                recognizer: TapGestureRecognizer()
+                  ..onTap = () {
+                    unfocus();
+                    onSignStateChange();
+                  },
               ),
             ],
           ),
@@ -200,7 +222,6 @@ class SignForm extends HookConsumerWidget {
               ...buildNameTextField(),
               ...buildEmailAndPasswordTextField(),
               ...buildSubmitButton(),
-              ...buildErrorMessage(),
               const TextDivider(text: 'or', innerPadding: 8, outerPadding: 8),
               const SizedBox(height: 8),
               ...buildOAuthButtons(),

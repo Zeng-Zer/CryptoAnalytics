@@ -12,7 +12,7 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  await FirebaseAuth.instance.useAuthEmulator('2df7-89-3-226-208.ngrok-free.app', 80);
+  await FirebaseAuth.instance.useAuthEmulator('2079-89-3-226-208.ngrok-free.app', 80);
 
   runApp(const ProviderScope(
     child: MyApp(),

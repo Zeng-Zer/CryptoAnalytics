@@ -21,10 +21,28 @@ abstract class _$AppRouter extends RootStackRouter {
         child: const HomeScreen(),
       );
     },
+    ChartsRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const ChartsScreen(),
+      );
+    },
+    ProfileRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const ProfileScreen(),
+      );
+    },
     SignInWrapperRoute.name: (routeData) {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
         child: const SignInWrapperScreen(),
+      );
+    },
+    BottomAppBarHolderRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const BottomAppBarHolderScreen(),
       );
     },
   };
@@ -45,6 +63,34 @@ class HomeRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [ChartsScreen]
+class ChartsRoute extends PageRouteInfo<void> {
+  const ChartsRoute({List<PageRouteInfo>? children})
+      : super(
+          ChartsRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'ChartsRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [ProfileScreen]
+class ProfileRoute extends PageRouteInfo<void> {
+  const ProfileRoute({List<PageRouteInfo>? children})
+      : super(
+          ProfileRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'ProfileRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
 /// [SignInWrapperScreen]
 class SignInWrapperRoute extends PageRouteInfo<void> {
   const SignInWrapperRoute({List<PageRouteInfo>? children})
@@ -54,6 +100,20 @@ class SignInWrapperRoute extends PageRouteInfo<void> {
         );
 
   static const String name = 'SignInWrapperRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [BottomAppBarHolderScreen]
+class BottomAppBarHolderRoute extends PageRouteInfo<void> {
+  const BottomAppBarHolderRoute({List<PageRouteInfo>? children})
+      : super(
+          BottomAppBarHolderRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'BottomAppBarHolderRoute';
 
   static const PageInfo<void> page = PageInfo<void>(name);
 }

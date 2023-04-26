@@ -6,21 +6,22 @@ import '../../routing/app_router.dart';
 import '../authentication/data/firebase_auth_repository.dart';
 
 @RoutePage()
-class HomeScreen extends ConsumerStatefulWidget {
-  const HomeScreen({
+class ProfileScreen extends ConsumerStatefulWidget {
+  const ProfileScreen({
     Key? key,
   }) : super(key: key);
 
   @override
-  ConsumerState createState() => _HomeScreenState();
+  ConsumerState createState() => _ProfileScreenState();
 }
 
-class _HomeScreenState extends ConsumerState<HomeScreen> {
+class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final authRepository = ref.watch(authRepositoryProvider);
+    final appRouter = context.router;
+
     return Scaffold(
-      appBar: AppBar(title: const Text('Title')),
       body: Center(
         child: Column(
           children: [
@@ -28,9 +29,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             ElevatedButton(
               onPressed: () async {
                 await authRepository.signOut();
-                context.router.replaceAll([const SignInWrapperRoute()]);
+                appRouter.replaceAll([const SignInWrapperRoute()]);
               },
-              child: Text('log out'),
+              child: const Text('log out'),
             )
           ],
         ),

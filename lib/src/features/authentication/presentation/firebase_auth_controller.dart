@@ -42,3 +42,16 @@ class AuthController extends _$AuthController {
     return state.value != null;
   }
 }
+
+@riverpod
+class AnonymousButtonController extends _$AnonymousButtonController {
+  @override
+  FutureOr<void> build({SignState? signState}) async {}
+
+  Future<void> signInAnonymously() async {
+    final authRepo = ref.watch(authRepositoryProvider);
+
+    state = const AsyncLoading();
+    state = await AsyncValue.guard(() => authRepo.signInAnonymously());
+  }
+}

@@ -1,12 +1,16 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:crypto_analytics/src/features/authentication/presentation/sign_in_wrapper_screen.dart';
-import 'package:crypto_analytics/src/features/home/home_screen.dart';
+import 'package:crypto_analytics/src/features/home/presentation/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../features/charts/charts_screen.dart';
+import '../features/profile/profile_screen.dart';
+import 'bottom_app_bar_holder_screen.dart';
+
 part 'app_router.gr.dart';
 
-// TODO PROVIDer
+// TODO PROVIDER
 final navigatorKey = GlobalKey<NavigatorState>();
 
 enum AppRoute { signIn }
@@ -21,7 +25,14 @@ class AppRouter extends _$AppRouter {
 
   @override
   List<AutoRoute> get routes => [
-        AutoRoute(page: HomeRoute.page),
+        AutoRoute(
+          page: BottomAppBarHolderRoute.page,
+          children: [
+            AutoRoute(page: HomeRoute.page),
+            AutoRoute(page: ChartsRoute.page),
+            AutoRoute(page: ProfileRoute.page),
+          ],
+        ),
         AutoRoute(page: SignInWrapperRoute.page),
       ];
 }
