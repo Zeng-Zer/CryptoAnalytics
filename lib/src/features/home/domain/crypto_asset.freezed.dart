@@ -24,13 +24,21 @@ mixin _$CryptoAsset {
   String get rank => throw _privateConstructorUsedError;
   String get symbol => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
-  String get supply => throw _privateConstructorUsedError;
-  String? get maxSupply => throw _privateConstructorUsedError;
-  String get marketCapUsd => throw _privateConstructorUsedError;
-  String get volumeUsd24Hr => throw _privateConstructorUsedError;
-  String get priceUsd => throw _privateConstructorUsedError;
-  String? get changePercent24Hr => throw _privateConstructorUsedError;
-  String? get vwap24Hr => throw _privateConstructorUsedError;
+  @JsonKey(fromJson: double.parse)
+  double get supply => throw _privateConstructorUsedError;
+  @JsonKey(fromJson: doubleFromNullable)
+  double? get maxSupply => throw _privateConstructorUsedError;
+  @JsonKey(fromJson: double.parse)
+  double get marketCapUsd => throw _privateConstructorUsedError;
+  @JsonKey(fromJson: double.parse)
+  double get volumeUsd24Hr => throw _privateConstructorUsedError;
+  @JsonKey(fromJson: double.parse)
+  double get priceUsd => throw _privateConstructorUsedError;
+  @JsonKey(fromJson: doubleFromNullable)
+  double? get changePercent24Hr => throw _privateConstructorUsedError;
+  @JsonKey(fromJson: doubleFromNullable)
+  double? get vwap24Hr => throw _privateConstructorUsedError;
+  String? get logoSvg => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -49,13 +57,14 @@ abstract class $CryptoAssetCopyWith<$Res> {
       String rank,
       String symbol,
       String name,
-      String supply,
-      String? maxSupply,
-      String marketCapUsd,
-      String volumeUsd24Hr,
-      String priceUsd,
-      String? changePercent24Hr,
-      String? vwap24Hr});
+      @JsonKey(fromJson: double.parse) double supply,
+      @JsonKey(fromJson: doubleFromNullable) double? maxSupply,
+      @JsonKey(fromJson: double.parse) double marketCapUsd,
+      @JsonKey(fromJson: double.parse) double volumeUsd24Hr,
+      @JsonKey(fromJson: double.parse) double priceUsd,
+      @JsonKey(fromJson: doubleFromNullable) double? changePercent24Hr,
+      @JsonKey(fromJson: doubleFromNullable) double? vwap24Hr,
+      String? logoSvg});
 }
 
 /// @nodoc
@@ -82,6 +91,7 @@ class _$CryptoAssetCopyWithImpl<$Res, $Val extends CryptoAsset>
     Object? priceUsd = null,
     Object? changePercent24Hr = freezed,
     Object? vwap24Hr = freezed,
+    Object? logoSvg = freezed,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -103,30 +113,34 @@ class _$CryptoAssetCopyWithImpl<$Res, $Val extends CryptoAsset>
       supply: null == supply
           ? _value.supply
           : supply // ignore: cast_nullable_to_non_nullable
-              as String,
+              as double,
       maxSupply: freezed == maxSupply
           ? _value.maxSupply
           : maxSupply // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as double?,
       marketCapUsd: null == marketCapUsd
           ? _value.marketCapUsd
           : marketCapUsd // ignore: cast_nullable_to_non_nullable
-              as String,
+              as double,
       volumeUsd24Hr: null == volumeUsd24Hr
           ? _value.volumeUsd24Hr
           : volumeUsd24Hr // ignore: cast_nullable_to_non_nullable
-              as String,
+              as double,
       priceUsd: null == priceUsd
           ? _value.priceUsd
           : priceUsd // ignore: cast_nullable_to_non_nullable
-              as String,
+              as double,
       changePercent24Hr: freezed == changePercent24Hr
           ? _value.changePercent24Hr
           : changePercent24Hr // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as double?,
       vwap24Hr: freezed == vwap24Hr
           ? _value.vwap24Hr
           : vwap24Hr // ignore: cast_nullable_to_non_nullable
+              as double?,
+      logoSvg: freezed == logoSvg
+          ? _value.logoSvg
+          : logoSvg // ignore: cast_nullable_to_non_nullable
               as String?,
     ) as $Val);
   }
@@ -145,13 +159,14 @@ abstract class _$$_CryptoAssetCopyWith<$Res>
       String rank,
       String symbol,
       String name,
-      String supply,
-      String? maxSupply,
-      String marketCapUsd,
-      String volumeUsd24Hr,
-      String priceUsd,
-      String? changePercent24Hr,
-      String? vwap24Hr});
+      @JsonKey(fromJson: double.parse) double supply,
+      @JsonKey(fromJson: doubleFromNullable) double? maxSupply,
+      @JsonKey(fromJson: double.parse) double marketCapUsd,
+      @JsonKey(fromJson: double.parse) double volumeUsd24Hr,
+      @JsonKey(fromJson: double.parse) double priceUsd,
+      @JsonKey(fromJson: doubleFromNullable) double? changePercent24Hr,
+      @JsonKey(fromJson: doubleFromNullable) double? vwap24Hr,
+      String? logoSvg});
 }
 
 /// @nodoc
@@ -176,6 +191,7 @@ class __$$_CryptoAssetCopyWithImpl<$Res>
     Object? priceUsd = null,
     Object? changePercent24Hr = freezed,
     Object? vwap24Hr = freezed,
+    Object? logoSvg = freezed,
   }) {
     return _then(_$_CryptoAsset(
       id: null == id
@@ -197,30 +213,34 @@ class __$$_CryptoAssetCopyWithImpl<$Res>
       supply: null == supply
           ? _value.supply
           : supply // ignore: cast_nullable_to_non_nullable
-              as String,
+              as double,
       maxSupply: freezed == maxSupply
           ? _value.maxSupply
           : maxSupply // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as double?,
       marketCapUsd: null == marketCapUsd
           ? _value.marketCapUsd
           : marketCapUsd // ignore: cast_nullable_to_non_nullable
-              as String,
+              as double,
       volumeUsd24Hr: null == volumeUsd24Hr
           ? _value.volumeUsd24Hr
           : volumeUsd24Hr // ignore: cast_nullable_to_non_nullable
-              as String,
+              as double,
       priceUsd: null == priceUsd
           ? _value.priceUsd
           : priceUsd // ignore: cast_nullable_to_non_nullable
-              as String,
+              as double,
       changePercent24Hr: freezed == changePercent24Hr
           ? _value.changePercent24Hr
           : changePercent24Hr // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as double?,
       vwap24Hr: freezed == vwap24Hr
           ? _value.vwap24Hr
           : vwap24Hr // ignore: cast_nullable_to_non_nullable
+              as double?,
+      logoSvg: freezed == logoSvg
+          ? _value.logoSvg
+          : logoSvg // ignore: cast_nullable_to_non_nullable
               as String?,
     ));
   }
@@ -229,18 +249,19 @@ class __$$_CryptoAssetCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$_CryptoAsset implements _CryptoAsset {
-  const _$_CryptoAsset(
+  _$_CryptoAsset(
       {required this.id,
       required this.rank,
       required this.symbol,
       required this.name,
-      required this.supply,
-      required this.maxSupply,
-      required this.marketCapUsd,
-      required this.volumeUsd24Hr,
-      required this.priceUsd,
-      required this.changePercent24Hr,
-      required this.vwap24Hr});
+      @JsonKey(fromJson: double.parse) required this.supply,
+      @JsonKey(fromJson: doubleFromNullable) required this.maxSupply,
+      @JsonKey(fromJson: double.parse) required this.marketCapUsd,
+      @JsonKey(fromJson: double.parse) required this.volumeUsd24Hr,
+      @JsonKey(fromJson: double.parse) required this.priceUsd,
+      @JsonKey(fromJson: doubleFromNullable) required this.changePercent24Hr,
+      @JsonKey(fromJson: doubleFromNullable) required this.vwap24Hr,
+      this.logoSvg});
 
   factory _$_CryptoAsset.fromJson(Map<String, dynamic> json) =>
       _$$_CryptoAssetFromJson(json);
@@ -254,23 +275,32 @@ class _$_CryptoAsset implements _CryptoAsset {
   @override
   final String name;
   @override
-  final String supply;
+  @JsonKey(fromJson: double.parse)
+  final double supply;
   @override
-  final String? maxSupply;
+  @JsonKey(fromJson: doubleFromNullable)
+  final double? maxSupply;
   @override
-  final String marketCapUsd;
+  @JsonKey(fromJson: double.parse)
+  final double marketCapUsd;
   @override
-  final String volumeUsd24Hr;
+  @JsonKey(fromJson: double.parse)
+  final double volumeUsd24Hr;
   @override
-  final String priceUsd;
+  @JsonKey(fromJson: double.parse)
+  final double priceUsd;
   @override
-  final String? changePercent24Hr;
+  @JsonKey(fromJson: doubleFromNullable)
+  final double? changePercent24Hr;
   @override
-  final String? vwap24Hr;
+  @JsonKey(fromJson: doubleFromNullable)
+  final double? vwap24Hr;
+  @override
+  final String? logoSvg;
 
   @override
   String toString() {
-    return 'CryptoAsset(id: $id, rank: $rank, symbol: $symbol, name: $name, supply: $supply, maxSupply: $maxSupply, marketCapUsd: $marketCapUsd, volumeUsd24Hr: $volumeUsd24Hr, priceUsd: $priceUsd, changePercent24Hr: $changePercent24Hr, vwap24Hr: $vwap24Hr)';
+    return 'CryptoAsset(id: $id, rank: $rank, symbol: $symbol, name: $name, supply: $supply, maxSupply: $maxSupply, marketCapUsd: $marketCapUsd, volumeUsd24Hr: $volumeUsd24Hr, priceUsd: $priceUsd, changePercent24Hr: $changePercent24Hr, vwap24Hr: $vwap24Hr, logoSvg: $logoSvg)';
   }
 
   @override
@@ -294,7 +324,8 @@ class _$_CryptoAsset implements _CryptoAsset {
             (identical(other.changePercent24Hr, changePercent24Hr) ||
                 other.changePercent24Hr == changePercent24Hr) &&
             (identical(other.vwap24Hr, vwap24Hr) ||
-                other.vwap24Hr == vwap24Hr));
+                other.vwap24Hr == vwap24Hr) &&
+            (identical(other.logoSvg, logoSvg) || other.logoSvg == logoSvg));
   }
 
   @JsonKey(ignore: true)
@@ -311,7 +342,8 @@ class _$_CryptoAsset implements _CryptoAsset {
       volumeUsd24Hr,
       priceUsd,
       changePercent24Hr,
-      vwap24Hr);
+      vwap24Hr,
+      logoSvg);
 
   @JsonKey(ignore: true)
   @override
@@ -328,18 +360,26 @@ class _$_CryptoAsset implements _CryptoAsset {
 }
 
 abstract class _CryptoAsset implements CryptoAsset {
-  const factory _CryptoAsset(
+  factory _CryptoAsset(
       {required final String id,
       required final String rank,
       required final String symbol,
       required final String name,
-      required final String supply,
-      required final String? maxSupply,
-      required final String marketCapUsd,
-      required final String volumeUsd24Hr,
-      required final String priceUsd,
-      required final String? changePercent24Hr,
-      required final String? vwap24Hr}) = _$_CryptoAsset;
+      @JsonKey(fromJson: double.parse)
+          required final double supply,
+      @JsonKey(fromJson: doubleFromNullable)
+          required final double? maxSupply,
+      @JsonKey(fromJson: double.parse)
+          required final double marketCapUsd,
+      @JsonKey(fromJson: double.parse)
+          required final double volumeUsd24Hr,
+      @JsonKey(fromJson: double.parse)
+          required final double priceUsd,
+      @JsonKey(fromJson: doubleFromNullable)
+          required final double? changePercent24Hr,
+      @JsonKey(fromJson: doubleFromNullable)
+          required final double? vwap24Hr,
+      final String? logoSvg}) = _$_CryptoAsset;
 
   factory _CryptoAsset.fromJson(Map<String, dynamic> json) =
       _$_CryptoAsset.fromJson;
@@ -353,19 +393,28 @@ abstract class _CryptoAsset implements CryptoAsset {
   @override
   String get name;
   @override
-  String get supply;
+  @JsonKey(fromJson: double.parse)
+  double get supply;
   @override
-  String? get maxSupply;
+  @JsonKey(fromJson: doubleFromNullable)
+  double? get maxSupply;
   @override
-  String get marketCapUsd;
+  @JsonKey(fromJson: double.parse)
+  double get marketCapUsd;
   @override
-  String get volumeUsd24Hr;
+  @JsonKey(fromJson: double.parse)
+  double get volumeUsd24Hr;
   @override
-  String get priceUsd;
+  @JsonKey(fromJson: double.parse)
+  double get priceUsd;
   @override
-  String? get changePercent24Hr;
+  @JsonKey(fromJson: doubleFromNullable)
+  double? get changePercent24Hr;
   @override
-  String? get vwap24Hr;
+  @JsonKey(fromJson: doubleFromNullable)
+  double? get vwap24Hr;
+  @override
+  String? get logoSvg;
   @override
   @JsonKey(ignore: true)
   _$$_CryptoAssetCopyWith<_$_CryptoAsset> get copyWith =>

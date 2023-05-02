@@ -3,7 +3,6 @@ import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-// TODO PROVIDer
 ThemeData theme() => Theme.of(navigatorKey.currentState!.overlay!.context);
 TextTheme textTheme() => Theme.of(navigatorKey.currentState!.overlay!.context).textTheme;
 // Color colorByStates(Set<MaterialState> states, { Color? main }) {
@@ -91,6 +90,7 @@ ThemeData light = FlexThemeData.light(
     appBarColor: Color(0xffaeb8d5),
     error: Color(0xffb00020),
   ),
+  scaffoldBackground: violet[50],
   textTheme: createTextTheme(),
   surfaceMode: FlexSurfaceMode.levelSurfacesLowScaffold,
   blendLevel: 7,
