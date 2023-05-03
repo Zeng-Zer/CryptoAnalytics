@@ -24,7 +24,7 @@ extension NullableExtensions<R, T> on T? {
 
 extension NumberFomatted on num? {
   String get asCompactCurrency => compactCurrency.format(this);
-  String get asCurrency => currency.format(this);
+  String get asCryptoCurrency => cryptoCurrency(this).format(this);
   String get asDecimal => decimal.format(this);
   String get asPercentage => this == null ? '' : '${this!.toStringAsFixed(2)}%';
 }

@@ -19,7 +19,7 @@ class CryptoAsset with _$CryptoAsset {
     @JsonKey(fromJson: double.parse) required double priceUsd,
     @JsonKey(fromJson: doubleFromNullable) required double? changePercent24Hr,
     @JsonKey(fromJson: doubleFromNullable) required double? vwap24Hr,
-    String? logoSvg,
+    @JsonKey(includeFromJson: false) String? logoSvg,
   }) = _CryptoAsset;
 
   factory CryptoAsset.fromJson(Map<String, dynamic> json) => _$CryptoAssetFromJson(json);

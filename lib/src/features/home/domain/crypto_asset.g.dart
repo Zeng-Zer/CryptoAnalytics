@@ -20,7 +20,6 @@ _$_CryptoAsset _$$_CryptoAssetFromJson(Map<String, dynamic> json) =>
       changePercent24Hr:
           doubleFromNullable(json['changePercent24Hr'] as String?),
       vwap24Hr: doubleFromNullable(json['vwap24Hr'] as String?),
-      logoSvg: json['logoSvg'] as String?,
     );
 
 Map<String, dynamic> _$$_CryptoAssetToJson(_$_CryptoAsset instance) =>
@@ -36,5 +35,4 @@ Map<String, dynamic> _$$_CryptoAssetToJson(_$_CryptoAsset instance) =>
       'priceUsd': instance.priceUsd,
       'changePercent24Hr': instance.changePercent24Hr,
       'vwap24Hr': instance.vwap24Hr,
-      'logoSvg': instance.logoSvg,
     };

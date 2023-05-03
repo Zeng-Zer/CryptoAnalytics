@@ -38,6 +38,7 @@ mixin _$CryptoAsset {
   double? get changePercent24Hr => throw _privateConstructorUsedError;
   @JsonKey(fromJson: doubleFromNullable)
   double? get vwap24Hr => throw _privateConstructorUsedError;
+  @JsonKey(includeFromJson: false)
   String? get logoSvg => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -64,7 +65,7 @@ abstract class $CryptoAssetCopyWith<$Res> {
       @JsonKey(fromJson: double.parse) double priceUsd,
       @JsonKey(fromJson: doubleFromNullable) double? changePercent24Hr,
       @JsonKey(fromJson: doubleFromNullable) double? vwap24Hr,
-      String? logoSvg});
+      @JsonKey(includeFromJson: false) String? logoSvg});
 }
 
 /// @nodoc
@@ -166,7 +167,7 @@ abstract class _$$_CryptoAssetCopyWith<$Res>
       @JsonKey(fromJson: double.parse) double priceUsd,
       @JsonKey(fromJson: doubleFromNullable) double? changePercent24Hr,
       @JsonKey(fromJson: doubleFromNullable) double? vwap24Hr,
-      String? logoSvg});
+      @JsonKey(includeFromJson: false) String? logoSvg});
 }
 
 /// @nodoc
@@ -261,7 +262,7 @@ class _$_CryptoAsset implements _CryptoAsset {
       @JsonKey(fromJson: double.parse) required this.priceUsd,
       @JsonKey(fromJson: doubleFromNullable) required this.changePercent24Hr,
       @JsonKey(fromJson: doubleFromNullable) required this.vwap24Hr,
-      this.logoSvg});
+      @JsonKey(includeFromJson: false) this.logoSvg});
 
   factory _$_CryptoAsset.fromJson(Map<String, dynamic> json) =>
       _$$_CryptoAssetFromJson(json);
@@ -296,6 +297,7 @@ class _$_CryptoAsset implements _CryptoAsset {
   @JsonKey(fromJson: doubleFromNullable)
   final double? vwap24Hr;
   @override
+  @JsonKey(includeFromJson: false)
   final String? logoSvg;
 
   @override
@@ -379,7 +381,8 @@ abstract class _CryptoAsset implements CryptoAsset {
           required final double? changePercent24Hr,
       @JsonKey(fromJson: doubleFromNullable)
           required final double? vwap24Hr,
-      final String? logoSvg}) = _$_CryptoAsset;
+      @JsonKey(includeFromJson: false)
+          final String? logoSvg}) = _$_CryptoAsset;
 
   factory _CryptoAsset.fromJson(Map<String, dynamic> json) =
       _$_CryptoAsset.fromJson;
@@ -414,6 +417,7 @@ abstract class _CryptoAsset implements CryptoAsset {
   @JsonKey(fromJson: doubleFromNullable)
   double? get vwap24Hr;
   @override
+  @JsonKey(includeFromJson: false)
   String? get logoSvg;
   @override
   @JsonKey(ignore: true)

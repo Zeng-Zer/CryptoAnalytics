@@ -15,16 +15,20 @@ class CryptoAssetTable extends HookConsumerWidget {
   }) : super(key: key);
 
   final List<CryptoAsset> assets;
+  final nameWidth = 170.0;
+  final priceWidth = 110.0;
+  final priceChangeWidth = 110.0;
+  final volumeWidth = 110.0;
+  final marketCapWidth = 90.0;
 
-  Widget buildPriceChange(CryptoAsset asset, TextStyle? contentStyle) {
-    if (asset.changePercent24Hr == null) return const SizedBox.shrink();
-    final color = asset.changePercent24Hr! >= 0 ? Colors.green : Colors.red;
-    final changeAbs = asset.changePercent24Hr!.abs();
+  Widget buildPriceChange(double? change, TextStyle? contentStyle) {
+    if (change == null) return const SizedBox.shrink();
+    final color = change >= 0 ? Colors.green : Colors.red;
+    final changeAbs = change.abs();
     return Row(
-      mainAxisSize: MainAxisSize.min,
       children: [
         Icon(
-          asset.changePercent24Hr! >= 0 ? Icons.arrow_drop_up : Icons.arrow_drop_down,
+          change >= 0 ? Icons.arrow_drop_up : Icons.arrow_drop_down,
           color: color,
           size: 24,
         ),
@@ -33,13 +37,104 @@ class CryptoAssetTable extends HookConsumerWidget {
     );
   }
 
+  Widget buildHeader() {
+    final headerStyle = textTheme().titleSmall?.copyWith(color: blueGrey.shade500);
+
+    buildHeaderCol(String colName, double width) => Container(
+          width: width,
+          padding: const EdgeInsets.all(4),
+          child: Text(colName, style: headerStyle),
+        );
+
+    return Row(
+      children: [
+        buildHeaderCol('Name', nameWidth),
+        buildHeaderCol('Price', priceWidth),
+        buildHeaderCol('Price Change', priceChangeWidth),
+        buildHeaderCol('Volume 24h', volumeWidth),
+        buildHeaderCol('Market Cap', marketCapWidth),
+      ],
+    );
+  }
+
+  Widget buildRow(CryptoAsset asset, TextStyle? contentStyle) {
+    return Row(
+      children: [
+        Container(
+          padding: const EdgeInsets.only(right: 16),
+          width: nameWidth,
+          child: Row(
+            children: [
+              asset.logoSvg.toOption().match(
+                    () => const SizedBox(width: 32, height: 32),
+                    (svg) => SvgPicture.string(svg, height: 32, width: 32),
+                  ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      asset.name,
+                      style: contentStyle,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    Text(
+                      asset.symbol,
+                      style: textTheme().bodySmall?.copyWith(color: blueGrey.shade600),
+                    )
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+        SizedBox(
+          width: priceWidth,
+          child: Text(asset.priceUsd.asCryptoCurrency, style: contentStyle),
+        ),
+        SizedBox(
+          width: priceChangeWidth,
+          child: buildPriceChange(asset.changePercent24Hr, contentStyle),
+        ),
+        SizedBox(
+          width: volumeWidth,
+          child: Text(asset.volumeUsd24Hr.asCompactCurrency, style: contentStyle),
+        ),
+        SizedBox(
+          width: marketCapWidth,
+          child: Text(asset.marketCapUsd.asCompactCurrency, style: contentStyle),
+        ),
+      ],
+    );
+  }
+
+  Widget buildTable(List<CryptoAsset> assets) {
+    final contentStyle = textTheme().titleSmall;
+    return SizedBox(
+      width: nameWidth + priceWidth + priceChangeWidth + volumeWidth + marketCapWidth,
+      child: Column(
+        children: [
+          buildHeader(),
+          const Divider(),
+          Expanded(
+            child: ListView.separated(
+              separatorBuilder: (context, index) => const Divider(),
+              scrollDirection: Axis.vertical,
+              itemCount: assets.length,
+              itemBuilder: (context, index) => buildRow(assets[index], contentStyle),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final headerStyle = textTheme().titleSmall?.copyWith(color: blueGrey.shade500);
-    final contentStyle = textTheme().titleSmall;
-    return InteractiveViewer(
-      scaleEnabled: false,
-      constrained: false,
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Container(
@@ -49,48 +144,7 @@ class CryptoAssetTable extends HookConsumerWidget {
           ),
           child: Padding(
             padding: const EdgeInsets.all(16),
-            child: DataTable(
-              columnSpacing: 24,
-              columns: [
-                DataColumn(label: Text('Name', style: headerStyle)),
-                DataColumn(label: Text('Price', style: headerStyle)),
-                DataColumn(label: Text('Price Change', style: headerStyle)),
-                DataColumn(label: Text('Volume 24h', style: headerStyle)),
-                DataColumn(label: Text('Market Cap', style: headerStyle)),
-              ],
-              rows: assets
-                  .map((asset) => DataRow(
-                        cells: [
-                          DataCell(Row(
-                            children: [
-                              asset.logoSvg.toOption().match(
-                                    () => const SizedBox(width: 32, height: 32),
-                                    (svg) => SvgPicture.string(svg, height: 32, width: 32),
-                                  ),
-                              const SizedBox(width: 16),
-                              Column(
-                                mainAxisSize: MainAxisSize.min,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(asset.name, style: contentStyle),
-                                  Text(
-                                    asset.symbol,
-                                    style:
-                                        textTheme().bodySmall?.copyWith(color: blueGrey.shade600),
-                                  )
-                                ],
-                              ),
-                            ],
-                          )),
-                          DataCell(Text(asset.priceUsd.asCurrency, style: contentStyle)),
-                          DataCell(buildPriceChange(asset, contentStyle)),
-                          DataCell(
-                              Text(asset.volumeUsd24Hr.asCompactCurrency, style: contentStyle)),
-                          DataCell(Text(asset.marketCapUsd.asCompactCurrency, style: contentStyle)),
-                        ],
-                      ))
-                  .toList(),
-            ),
+            child: buildTable(assets),
           ),
         ),
       ),
