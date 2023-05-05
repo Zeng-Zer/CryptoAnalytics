@@ -1,3 +1,6 @@
+import 'package:fpdart/fpdart.dart';
+
+import '../constants/data_exception.dart';
 import 'number_formatter.dart';
 
 extension Intersperse<T> on Iterable<T> {
@@ -27,4 +30,18 @@ extension NumberFomatted on num? {
   String get asCryptoCurrency => cryptoCurrency(this).format(this);
   String get asDecimal => decimal.format(this);
   String get asPercentage => this == null ? '' : '${this!.toStringAsFixed(2)}%';
+}
+
+extension TaskEitherUnwrap<R> on TaskEither<DataException, R> {
+  Future<R> unwrap() async => (await run()).match(
+        (l) {
+          print('${l.message}\n${l.stackTrace}');
+          return Future.error(l.message, l.stackTrace);
+        },
+        (r) => r,
+      );
+}
+
+extension NumDateTime on num {
+  DateTime get asDateTime => DateTime.fromMillisecondsSinceEpoch(toInt());
 }

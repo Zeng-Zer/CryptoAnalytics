@@ -15,6 +15,14 @@ NumberFormat currencyWithDigit(int digit) => NumberFormat.currency(
 NumberFormat cryptoCurrency(num? value) {
   if (value == null) return currencyWithDigit(2);
 
+  if (value >= 1000) {
+    return currencyWithDigit(0);
+  }
+
+  if (value >= 100) {
+    return currencyWithDigit(1);
+  }
+
   if (value >= 10) {
     return currencyWithDigit(2);
   }
@@ -24,7 +32,6 @@ NumberFormat cryptoCurrency(num? value) {
   }
 
   final firstDigitPosition = log(value) / ln10;
-
   return currencyWithDigit(4 - firstDigitPosition.round());
 }
 
