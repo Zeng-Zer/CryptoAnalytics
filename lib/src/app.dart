@@ -12,9 +12,10 @@ class MyApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final appRouter = ref.watch(appRouterProvider);
     final authRepo = ref.watch(authRepositoryProvider);
+    final themeData = ref.watch(themeDataProvider);
 
     return MaterialApp.router(
-      theme: createTheme(),
+      theme: themeData,
       routeInformationParser: appRouter.defaultRouteParser(includePrefixMatches: true),
       routerDelegate: appRouter.delegate(
         navigatorObservers: () => [

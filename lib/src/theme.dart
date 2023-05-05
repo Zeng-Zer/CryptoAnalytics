@@ -2,11 +2,14 @@ import 'package:crypto_analytics/src/routing/app_router.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'theme.g.dart';
 
 ThemeData theme() => Theme.of(navigatorKey.currentState!.overlay!.context);
 TextTheme textTheme() => Theme.of(navigatorKey.currentState!.overlay!.context).textTheme;
 // Color colorByStates(Set<MaterialState> states, { Color? main }) {
-//   states.forEach(print);
+//   states.forEach(print;
 //   if (states.contains(MaterialState.disabled)) {
 //     return blueGrey.shade500.withOpacity(0.38);
 //   }
@@ -75,95 +78,99 @@ TextTheme createTextTheme() {
   );
 }
 
-ThemeData createTheme() {
+ThemeData get light => FlexThemeData.light(
+      colors: const FlexSchemeColor(
+        primary: Color(0xff8b5cf6),
+        primaryContainer: Color(0xfff5f3ff),
+        secondary: Color(0xff1e3a8a),
+        secondaryContainer: Color(0xffaeb8d5),
+        tertiary: Color(0xff006875),
+        tertiaryContainer: Color(0xff95f0ff),
+        appBarColor: Color(0xffaeb8d5),
+        error: Color(0xffb00020),
+      ),
+      surface: violet[50],
+      scaffoldBackground: violet[50],
+      textTheme: createTextTheme(),
+      surfaceMode: FlexSurfaceMode.levelSurfacesLowScaffold,
+      blendLevel: 7,
+      subThemesData: const FlexSubThemesData(
+        appBarBackgroundSchemeColor: SchemeColor.surface,
+        navigationBarBackgroundSchemeColor: SchemeColor.surface,
+        blendOnLevel: 10,
+        blendOnColors: false,
+        useM2StyleDividerInM3: true,
+        defaultRadius: 8.0,
+        textButtonRadius: 40.0,
+        filledButtonRadius: 40.0,
+        elevatedButtonRadius: 40.0,
+        outlinedButtonRadius: 40.0,
+        segmentedButtonRadius: 40.0,
+        inputDecoratorBackgroundAlpha: 20,
+        inputDecoratorBorderType: FlexInputBorderType.underline,
+        inputDecoratorUnfocusedBorderIsColored: false,
+        fabUseShape: true,
+        chipRadius: 40.0,
+        navigationBarSelectedLabelSchemeColor: SchemeColor.onSurface,
+        navigationBarUnselectedLabelSchemeColor: SchemeColor.onSurface,
+        navigationBarMutedUnselectedLabel: false,
+        navigationBarSelectedIconSchemeColor: SchemeColor.onSurface,
+        navigationBarUnselectedIconSchemeColor: SchemeColor.onSurface,
+        navigationBarMutedUnselectedIcon: false,
+        navigationBarIndicatorSchemeColor: SchemeColor.secondaryContainer,
+        navigationBarIndicatorOpacity: 0.20,
+        navigationRailIndicatorOpacity: 0.20,
+      ),
+      visualDensity: FlexColorScheme.comfortablePlatformDensity,
+      useMaterial3: true,
+      swapLegacyOnMaterial3: true,
+      fontFamily: GoogleFonts.readexPro().fontFamily,
+    );
+
+ThemeData get dark => FlexThemeData.dark(
+      colors: const FlexSchemeColor(
+        primary: Color(0xff9fc9ff),
+        primaryContainer: Color(0xff00325b),
+        secondary: Color(0xffffb59d),
+        secondaryContainer: Color(0xff872100),
+        tertiary: Color(0xff86d2e1),
+        tertiaryContainer: Color(0xff004e59),
+        appBarColor: Color(0xff872100),
+        error: Color(0xffcf6679),
+      ),
+      textTheme: createTextTheme(),
+      surfaceMode: FlexSurfaceMode.levelSurfacesLowScaffold,
+      blendLevel: 13,
+      subThemesData: const FlexSubThemesData(
+        blendOnLevel: 20,
+        useM2StyleDividerInM3: true,
+        defaultRadius: 8.0,
+        textButtonRadius: 40.0,
+        filledButtonRadius: 40.0,
+        elevatedButtonRadius: 40.0,
+        outlinedButtonRadius: 40.0,
+        segmentedButtonRadius: 40.0,
+        inputDecoratorBorderType: FlexInputBorderType.underline,
+        inputDecoratorUnfocusedBorderIsColored: false,
+        fabUseShape: true,
+        chipRadius: 40.0,
+        navigationBarSelectedLabelSchemeColor: SchemeColor.onSurface,
+        navigationBarUnselectedLabelSchemeColor: SchemeColor.onSurface,
+        navigationBarMutedUnselectedLabel: false,
+        navigationBarSelectedIconSchemeColor: SchemeColor.onSurface,
+        navigationBarUnselectedIconSchemeColor: SchemeColor.onSurface,
+        navigationBarMutedUnselectedIcon: false,
+        navigationBarIndicatorSchemeColor: SchemeColor.secondaryContainer,
+        navigationBarIndicatorOpacity: 0.20,
+        navigationRailIndicatorOpacity: 0.20,
+      ),
+      visualDensity: FlexColorScheme.comfortablePlatformDensity,
+      useMaterial3: true,
+      swapLegacyOnMaterial3: true,
+      fontFamily: GoogleFonts.readexPro().fontFamily,
+    );
+
+@riverpod
+ThemeData themeData(ThemeDataRef ref) {
   return light;
 }
-
-ThemeData light = FlexThemeData.light(
-  colors: const FlexSchemeColor(
-    primary: Color(0xff8b5cf6),
-    primaryContainer: Color(0xfff5f3ff),
-    secondary: Color(0xff1e3a8a),
-    secondaryContainer: Color(0xffaeb8d5),
-    tertiary: Color(0xff006875),
-    tertiaryContainer: Color(0xff95f0ff),
-    appBarColor: Color(0xffaeb8d5),
-    error: Color(0xffb00020),
-  ),
-  scaffoldBackground: violet[50],
-  textTheme: createTextTheme(),
-  surfaceMode: FlexSurfaceMode.levelSurfacesLowScaffold,
-  blendLevel: 7,
-  subThemesData: const FlexSubThemesData(
-    blendOnLevel: 10,
-    blendOnColors: false,
-    useM2StyleDividerInM3: true,
-    defaultRadius: 8.0,
-    textButtonRadius: 40.0,
-    filledButtonRadius: 40.0,
-    elevatedButtonRadius: 40.0,
-    outlinedButtonRadius: 40.0,
-    segmentedButtonRadius: 40.0,
-    inputDecoratorBackgroundAlpha: 20,
-    inputDecoratorBorderType: FlexInputBorderType.underline,
-    inputDecoratorUnfocusedBorderIsColored: false,
-    fabUseShape: true,
-    chipRadius: 40.0,
-    navigationBarSelectedLabelSchemeColor: SchemeColor.onSurface,
-    navigationBarUnselectedLabelSchemeColor: SchemeColor.onSurface,
-    navigationBarMutedUnselectedLabel: false,
-    navigationBarSelectedIconSchemeColor: SchemeColor.onSurface,
-    navigationBarUnselectedIconSchemeColor: SchemeColor.onSurface,
-    navigationBarMutedUnselectedIcon: false,
-    navigationBarIndicatorSchemeColor: SchemeColor.secondaryContainer,
-    navigationBarIndicatorOpacity: 0.20,
-    navigationRailIndicatorOpacity: 0.20,
-  ),
-  visualDensity: FlexColorScheme.comfortablePlatformDensity,
-  useMaterial3: true,
-  swapLegacyOnMaterial3: true,
-  fontFamily: GoogleFonts.readexPro().fontFamily,
-);
-
-ThemeData dark = FlexThemeData.dark(
-  colors: const FlexSchemeColor(
-    primary: Color(0xff9fc9ff),
-    primaryContainer: Color(0xff00325b),
-    secondary: Color(0xffffb59d),
-    secondaryContainer: Color(0xff872100),
-    tertiary: Color(0xff86d2e1),
-    tertiaryContainer: Color(0xff004e59),
-    appBarColor: Color(0xff872100),
-    error: Color(0xffcf6679),
-  ),
-  textTheme: createTextTheme(),
-  surfaceMode: FlexSurfaceMode.levelSurfacesLowScaffold,
-  blendLevel: 13,
-  subThemesData: const FlexSubThemesData(
-    blendOnLevel: 20,
-    useM2StyleDividerInM3: true,
-    defaultRadius: 8.0,
-    textButtonRadius: 40.0,
-    filledButtonRadius: 40.0,
-    elevatedButtonRadius: 40.0,
-    outlinedButtonRadius: 40.0,
-    segmentedButtonRadius: 40.0,
-    inputDecoratorBorderType: FlexInputBorderType.underline,
-    inputDecoratorUnfocusedBorderIsColored: false,
-    fabUseShape: true,
-    chipRadius: 40.0,
-    navigationBarSelectedLabelSchemeColor: SchemeColor.onSurface,
-    navigationBarUnselectedLabelSchemeColor: SchemeColor.onSurface,
-    navigationBarMutedUnselectedLabel: false,
-    navigationBarSelectedIconSchemeColor: SchemeColor.onSurface,
-    navigationBarUnselectedIconSchemeColor: SchemeColor.onSurface,
-    navigationBarMutedUnselectedIcon: false,
-    navigationBarIndicatorSchemeColor: SchemeColor.secondaryContainer,
-    navigationBarIndicatorOpacity: 0.20,
-    navigationRailIndicatorOpacity: 0.20,
-  ),
-  visualDensity: FlexColorScheme.comfortablePlatformDensity,
-  useMaterial3: true,
-  swapLegacyOnMaterial3: true,
-  fontFamily: GoogleFonts.readexPro().fontFamily,
-);

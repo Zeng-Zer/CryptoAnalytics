@@ -18,6 +18,7 @@ class BottomAppBarHolderScreen extends StatelessWidget {
         ProfileRoute(),
       ],
       bottomNavigationBuilder: (_, tabsRouter) => NavigationBar(
+        backgroundColor: Colors.white,
         selectedIndex: tabsRouter.activeIndex,
         onDestinationSelected: tabsRouter.setActiveIndex,
         destinations: const [

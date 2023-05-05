@@ -45,6 +45,16 @@ abstract class _$AppRouter extends RootStackRouter {
         child: const BottomAppBarHolderScreen(),
       );
     },
+    CryptoRoute.name: (routeData) {
+      final args = routeData.argsAs<CryptoRouteArgs>();
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: CryptoScreen(
+          key: args.key,
+          asset: args.asset,
+        ),
+      );
+    },
   };
 }
 
@@ -116,4 +126,41 @@ class BottomAppBarHolderRoute extends PageRouteInfo<void> {
   static const String name = 'BottomAppBarHolderRoute';
 
   static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [CryptoScreen]
+class CryptoRoute extends PageRouteInfo<CryptoRouteArgs> {
+  CryptoRoute({
+    Key? key,
+    required CryptoAsset asset,
+    List<PageRouteInfo>? children,
+  }) : super(
+          CryptoRoute.name,
+          args: CryptoRouteArgs(
+            key: key,
+            asset: asset,
+          ),
+          initialChildren: children,
+        );
+
+  static const String name = 'CryptoRoute';
+
+  static const PageInfo<CryptoRouteArgs> page = PageInfo<CryptoRouteArgs>(name);
+}
+
+class CryptoRouteArgs {
+  const CryptoRouteArgs({
+    this.key,
+    required this.asset,
+  });
+
+  final Key? key;
+
+  final CryptoAsset asset;
+
+  @override
+  String toString() {
+    return 'CryptoRouteArgs{key: $key, asset: $asset}';
+  }
 }

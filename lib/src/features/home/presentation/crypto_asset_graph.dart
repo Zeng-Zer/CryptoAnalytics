@@ -66,6 +66,7 @@ class _CryptoAssetChartState extends ConsumerState<CryptoAssetChart> {
     final diffIdx = history.indexWhere((e) => e.time == newHistory.first.time);
     final removedIndexes = List.generate(diffIdx, (index) => index);
     for (var i in removedIndexes) {
+      print('removing ${history[i].time.asDateTime}');
       history.removeAt(i);
     }
 
@@ -73,6 +74,7 @@ class _CryptoAssetChartState extends ConsumerState<CryptoAssetChart> {
     final lastDiffIdx = newHistory.indexWhere((e) => e.time == history.last.time) + 1;
     final addedIndexes = [for (var i = lastDiffIdx; i < newHistory.length; i++) i];
     for (var i in addedIndexes) {
+      print('Adding ${newHistory[i].time.asDateTime}');
       history.add(newHistory[i]);
     }
 
@@ -90,7 +92,8 @@ class _CryptoAssetChartState extends ConsumerState<CryptoAssetChart> {
       if (next.hasValue &&
           next.value != null &&
           next.value!.first.time != history.first.time &&
-          next.value!.last.time != history.last.time) {
+          next.value!.last.time != history.last.time &&
+          next.value!.length == history.length) {
         final newHistory = next.value!;
         updateChartDataSource(newHistory);
       }
@@ -125,7 +128,7 @@ class _CryptoAssetChartState extends ConsumerState<CryptoAssetChart> {
         autoScrollingMode: AutoScrollingMode.end,
         enableAutoIntervalOnZooming: false,
         majorGridLines: const MajorGridLines(width: 0),
-        autoScrollingDelta: 12,
+        autoScrollingDelta: 10,
         autoScrollingDeltaType: DateTimeIntervalType.hours,
         interval: 2,
         labelStyle: textTheme().labelSmall?.copyWith(color: blueGrey.shade600),
@@ -228,7 +231,7 @@ class CryptoAssetPriceChartHeader extends HookConsumerWidget {
 class CryptoAssetGraph extends HookConsumerWidget {
   const CryptoAssetGraph({
     Key? key,
-    this.assetId = 'bitcoin',
+    required this.assetId,
   }) : super(key: key);
 
   final String assetId;
@@ -247,12 +250,13 @@ class CryptoAssetGraph extends HookConsumerWidget {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 8.0),
+        padding: const EdgeInsets.only(top: 20.0, left: 8, right: 8),
         decoration: const BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.all(Radius.circular(12)),
         ),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
             CryptoAssetPriceChartHeader(assetId: assetId),
             buildCryptoAssetChart(ref),

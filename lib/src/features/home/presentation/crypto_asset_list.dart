@@ -1,8 +1,10 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../routing/app_router.dart';
 import '../../../theme.dart';
 import '../../../utils/extensions.dart';
 import '../domain/crypto_asset.dart';
@@ -57,38 +59,47 @@ class CryptoAssetTable extends HookConsumerWidget {
     );
   }
 
-  Widget buildRow(CryptoAsset asset, TextStyle? contentStyle) {
+  Widget buildRow(BuildContext context, CryptoAsset asset, TextStyle? contentStyle) {
+    final nameRow = Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () => context.pushRoute(CryptoRoute(asset: asset)),
+        borderRadius: BorderRadius.circular(10),
+        child: Row(
+          children: [
+            asset.logoSvg.toOption().match(
+                  () => const SizedBox(width: 32, height: 32),
+                  (svg) => SvgPicture.string(svg, height: 32, width: 32),
+                ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    asset.name,
+                    style: contentStyle,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  Text(
+                    asset.symbol,
+                    style: textTheme().bodySmall?.copyWith(color: blueGrey.shade600),
+                  )
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+
     return Row(
       children: [
         Container(
           padding: const EdgeInsets.only(right: 16),
           width: nameWidth,
-          child: Row(
-            children: [
-              asset.logoSvg.toOption().match(
-                    () => const SizedBox(width: 32, height: 32),
-                    (svg) => SvgPicture.string(svg, height: 32, width: 32),
-                  ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      asset.name,
-                      style: contentStyle,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    Text(
-                      asset.symbol,
-                      style: textTheme().bodySmall?.copyWith(color: blueGrey.shade600),
-                    )
-                  ],
-                ),
-              ),
-            ],
-          ),
+          child: nameRow,
         ),
         SizedBox(
           width: priceWidth,
@@ -123,7 +134,7 @@ class CryptoAssetTable extends HookConsumerWidget {
               separatorBuilder: (context, index) => const Divider(),
               scrollDirection: Axis.vertical,
               itemCount: assets.length,
-              itemBuilder: (context, index) => buildRow(assets[index], contentStyle),
+              itemBuilder: (context, index) => buildRow(context, assets[index], contentStyle),
             ),
           ),
         ],
