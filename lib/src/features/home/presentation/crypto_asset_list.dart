@@ -8,10 +8,9 @@ import '../../../routing/app_router.dart';
 import '../../../theme.dart';
 import '../../../utils/extensions.dart';
 import '../domain/crypto_asset.dart';
-import 'providers/crypto_asset_provider.dart';
 
-class CryptoAssetTable extends HookConsumerWidget {
-  const CryptoAssetTable({
+class CryptoAssetList extends HookConsumerWidget {
+  const CryptoAssetList({
     Key? key,
     required this.assets,
   }) : super(key: key);
@@ -126,11 +125,13 @@ class CryptoAssetTable extends HookConsumerWidget {
     return SizedBox(
       width: nameWidth + priceWidth + priceChangeWidth + volumeWidth + marketCapWidth,
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           buildHeader(),
           const Divider(),
           Expanded(
             child: ListView.separated(
+              shrinkWrap: true,
               separatorBuilder: (context, index) => const Divider(),
               scrollDirection: Axis.vertical,
               itemCount: assets.length,
@@ -147,33 +148,18 @@ class CryptoAssetTable extends HookConsumerWidget {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Container(
           decoration: const BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.all(Radius.circular(12)),
           ),
           child: Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: buildTable(assets),
           ),
         ),
       ),
     );
-  }
-}
-
-class CryptoAssetList extends HookConsumerWidget {
-  const CryptoAssetList({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return ref.watch(fetchAssetsProvider).when(
-          loading: () => const Center(child: CircularProgressIndicator()),
-          error: (err, stack) => Center(child: Text(err.toString())),
-          data: (data) => CryptoAssetTable(assets: data),
-        );
   }
 }

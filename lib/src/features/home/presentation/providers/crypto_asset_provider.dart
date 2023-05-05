@@ -70,19 +70,6 @@ Future<List<CryptoAssetHistory>> fetchAssetHistory(FetchAssetHistoryRef ref,
   return ref.read(cryptoRepositoryProvider).fetchAssetHistory(assetId).unwrap();
 }
 
-// @riverpod
-// Future<CryptoAssetDetail> fetchAssetDetail(FetchAssetDetailRef ref, String assetId) async {
-//   print('fetch Assets Detail');
-//   ref.invalidate(fetchAssetHistoryProvider(assetId));
-//   final history = await ref.read(fetchAssetHistoryProvider(assetId).future);
-//   final assets = await ref.watch(fetchAssetsProvider.future);
-//   final asset = assets.firstWhere((asset) => asset.id == assetId);
-//   return CryptoAssetDetail(
-//     asset: asset,
-//     history: history,
-//   );
-// }
-
 TaskEither<DataException, CryptoAsset> _addAssetLogo(
     CryptoAsset asset, Future<String?> Function() fetchLogo) {
   final assetWithLogo = TaskOption.tryCatch(() async {
