@@ -7,6 +7,7 @@ import '../domain/crypto_asset.dart';
 import '../domain/crypto_asset_history.dart';
 import '../domain/crypto_binance_pair.dart';
 import '../domain/crypto_candle.dart';
+import '../domain/crypto_order.dart';
 
 // Wrap dio response, deserialize json and return a TaskEither
 extension CoinCapApi on Future<Response> {
@@ -75,6 +76,7 @@ class CryptoRepository {
   String exchangeInfoUrl = '/exchangeInfo';
   String priceTickerUrl = '/ticker/price';
   String klinesUrl = '/klines';
+  String orderBookUrl = '/depth';
 
   TaskEither<DataException, List<CryptoBinancePair>> fetchBinancePairs() {
     return TaskEither.tryCatch(
@@ -104,6 +106,13 @@ class CryptoRepository {
       final list = json as List<dynamic>;
       return list.map((candle) => CryptoCandle.fromList(candle as List<dynamic>)).toList();
     });
+  }
+
+  TaskEither<DataException, CryptoOrder> fetchOrderBook(String symbol) {
+    return _dio.get(binanceBaseUrl + orderBookUrl, queryParameters: {
+      'symbol': symbol,
+      'limit': 20,
+    }).wrap<CryptoOrder>(parseJson: (json) => CryptoOrder.fromJson(json));
   }
 }
 

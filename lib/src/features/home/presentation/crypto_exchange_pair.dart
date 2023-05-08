@@ -10,24 +10,26 @@ class CryptoExchangePair extends ConsumerWidget {
   const CryptoExchangePair({
     Key? key,
     required this.pair,
-    required this.logoSize,
+    required this.baseLogoSize,
+    required this.quoteLogoSize,
     this.textStyle,
   }) : super(key: key);
 
   final CryptoBinancePair pair;
-  final double logoSize;
+  final double baseLogoSize;
+  final double quoteLogoSize;
   final TextStyle? textStyle;
 
-  Widget? buildLogo(WidgetRef ref, String symbol) {
+  Widget? buildLogo(WidgetRef ref, String symbol, double size) {
     return ref.watch(fetchLogoProvider(symbol)).whenOrNull(
-          data: (logo) => logo != null ? SvgLogoString(logo: logo, size: logoSize) : null,
+          data: (logo) => logo != null ? SvgLogoString(logo: logo, size: size) : null,
         );
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final baseLogo = buildLogo(ref, pair.baseAsset);
-    final quoteLogo = buildLogo(ref, pair.quoteAsset);
+    final baseLogo = buildLogo(ref, pair.baseAsset, baseLogoSize);
+    final quoteLogo = buildLogo(ref, pair.quoteAsset, quoteLogoSize);
     return IntrinsicHeight(
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -36,7 +38,7 @@ class CryptoExchangePair extends ConsumerWidget {
             baseLogo,
             const SizedBox(width: 4),
           ],
-          Icon(Icons.swap_horiz, size: logoSize, color: blueGrey.shade600),
+          Icon(Icons.swap_horiz, size: quoteLogoSize, color: blueGrey.shade600),
           const SizedBox(width: 4),
           if (quoteLogo != null) ...[
             quoteLogo,

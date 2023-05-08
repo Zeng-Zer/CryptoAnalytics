@@ -108,8 +108,10 @@ Future<List<CryptoCandle>> fetchCandles(
 @riverpod
 class CryptoPairSelection extends _$CryptoPairSelection {
   @override
-  CryptoBinancePair? build() {
-    return null;
+  CryptoBinancePair? build(String symbol) {
+    return ref
+        .watch(fetchBinancePairsByBaseSymbolProvider(symbol))
+        .whenOrNull(data: (pairs) => pairs.first);
   }
 
   void select(CryptoBinancePair pair) {
@@ -124,8 +126,9 @@ class CryptoPriceOrCandleSelection extends _$CryptoPriceOrCandleSelection {
     return PriceCandleState.price;
   }
 
-  void toggle() {
+  PriceCandleState toggle() {
     state = state == PriceCandleState.price ? PriceCandleState.candle : PriceCandleState.price;
+    return state;
   }
 }
 

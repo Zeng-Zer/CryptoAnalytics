@@ -4,6 +4,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../components/z_search_bar.dart';
+import '../../../constants.dart';
 import '../domain/crypto_asset.dart';
 import 'crypto_asset_list.dart';
 import 'providers/crypto_asset_provider.dart';
@@ -49,8 +50,8 @@ class HomeScreen extends HookConsumerWidget {
         body: SafeArea(
           child: Column(
             children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 4, 16, 0),
+              Container(
+                margin: sideMargin.copyWith(top: 8),
                 child: ZSearchBar(
                   hint: 'Search tokens',
                   focusNode: focusNode,

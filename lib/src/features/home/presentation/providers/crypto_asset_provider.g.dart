@@ -498,24 +498,105 @@ class FetchCandlesProvider
 }
 
 String _$cryptoPairSelectionHash() =>
-    r'ce343e7ef617e5e649ec50edf9fcc1a02fd3f113';
+    r'4cfaa3cbcd99f3f744ad4816ab4fe7f4c03036fd';
+
+abstract class _$CryptoPairSelection
+    extends BuildlessAutoDisposeNotifier<CryptoBinancePair?> {
+  late final String symbol;
+
+  CryptoBinancePair? build(
+    String symbol,
+  );
+}
 
 /// See also [CryptoPairSelection].
 @ProviderFor(CryptoPairSelection)
-final cryptoPairSelectionProvider = AutoDisposeNotifierProvider<
-    CryptoPairSelection, CryptoBinancePair?>.internal(
-  CryptoPairSelection.new,
-  name: r'cryptoPairSelectionProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$cryptoPairSelectionHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+const cryptoPairSelectionProvider = CryptoPairSelectionFamily();
 
-typedef _$CryptoPairSelection = AutoDisposeNotifier<CryptoBinancePair?>;
+/// See also [CryptoPairSelection].
+class CryptoPairSelectionFamily extends Family<CryptoBinancePair?> {
+  /// See also [CryptoPairSelection].
+  const CryptoPairSelectionFamily();
+
+  /// See also [CryptoPairSelection].
+  CryptoPairSelectionProvider call(
+    String symbol,
+  ) {
+    return CryptoPairSelectionProvider(
+      symbol,
+    );
+  }
+
+  @override
+  CryptoPairSelectionProvider getProviderOverride(
+    covariant CryptoPairSelectionProvider provider,
+  ) {
+    return call(
+      provider.symbol,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'cryptoPairSelectionProvider';
+}
+
+/// See also [CryptoPairSelection].
+class CryptoPairSelectionProvider extends AutoDisposeNotifierProviderImpl<
+    CryptoPairSelection, CryptoBinancePair?> {
+  /// See also [CryptoPairSelection].
+  CryptoPairSelectionProvider(
+    this.symbol,
+  ) : super.internal(
+          () => CryptoPairSelection()..symbol = symbol,
+          from: cryptoPairSelectionProvider,
+          name: r'cryptoPairSelectionProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$cryptoPairSelectionHash,
+          dependencies: CryptoPairSelectionFamily._dependencies,
+          allTransitiveDependencies:
+              CryptoPairSelectionFamily._allTransitiveDependencies,
+        );
+
+  final String symbol;
+
+  @override
+  bool operator ==(Object other) {
+    return other is CryptoPairSelectionProvider && other.symbol == symbol;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, symbol.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+
+  @override
+  CryptoBinancePair? runNotifierBuild(
+    covariant CryptoPairSelection notifier,
+  ) {
+    return notifier.build(
+      symbol,
+    );
+  }
+}
+
 String _$cryptoPriceOrCandleSelectionHash() =>
-    r'18f765949b94de638069fe2392e506eed399a349';
+    r'eee3d379a04dacc98d88c656e21e721fc9c23be1';
 
 /// See also [CryptoPriceOrCandleSelection].
 @ProviderFor(CryptoPriceOrCandleSelection)

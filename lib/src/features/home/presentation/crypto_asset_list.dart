@@ -2,7 +2,9 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../components/padded_container.dart';
 import '../../../components/svg_logo_string.dart';
+import '../../../constants.dart';
 import '../../../routing/app_router.dart';
 import '../../../theme.dart';
 import '../../../utils/extensions.dart';
@@ -143,18 +145,9 @@ class CryptoAssetList extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: Container(
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.all(Radius.circular(12)),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: buildTable(assets),
-          ),
-        ),
+      child: PaddedContainer(
+        margin: sideMargin,
+        child: buildTable(assets),
       ),
     );
   }

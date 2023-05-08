@@ -87,6 +87,7 @@ class _CryptoAssetChartState extends ConsumerState<CryptoAssetPriceChart>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     ref.listen(fetchAssetHistoryProvider(assetId: widget.assetId, refresh: true), (previous, next) {
       if (next.hasValue &&
           next.value != null &&
@@ -119,16 +120,16 @@ class _CryptoAssetChartState extends ConsumerState<CryptoAssetPriceChart>
         lineWidth: 1,
         lineDashArray: const [5, 5],
       ),
-      // zoomPanBehavior: ZoomPanBehavior(
-      //   enablePanning: true,
-      // ),
+      zoomPanBehavior: ZoomPanBehavior(
+        enablePanning: true,
+      ),
       primaryXAxis: DateTimeAxis(
         dateFormat: DateFormat.Hm(),
         autoScrollingMode: AutoScrollingMode.end,
         enableAutoIntervalOnZooming: false,
         majorGridLines: const MajorGridLines(width: 0),
-        // autoScrollingDelta: 10,
-        // autoScrollingDeltaType: DateTimeIntervalType.hours,
+        autoScrollingDelta: 10,
+        autoScrollingDeltaType: DateTimeIntervalType.hours,
         interval: 2,
         labelStyle: textTheme().labelSmall?.copyWith(color: blueGrey.shade600),
       ),
@@ -200,8 +201,7 @@ class CryptoAssetPriceChartHeader extends HookConsumerWidget {
       skipLoadingOnReload: true,
       error: (error, stackTrace) => Text(error.toString()),
       loading: () => const Center(child: CircularProgressIndicator()),
-      data: (asset) => Container(
-        alignment: Alignment.centerLeft,
+      data: (asset) => Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -239,27 +239,17 @@ class CryptoAssetPriceGraph extends HookConsumerWidget {
     return history.when(
       error: (error, stackTrace) => Text(error.toString()),
       loading: () => const Center(child: CircularProgressIndicator()),
-      data: (history) => Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: Container(
-          padding: const EdgeInsets.only(top: 12.0, left: 8, right: 8),
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.all(Radius.circular(12)),
+      data: (history) => Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // CryptoAssetPriceChartHeader(assetId: assetId),
+          Expanded(
+            child: CryptoAssetPriceChart(
+              assetId: assetId,
+              initialHistory: history,
+            ),
           ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              CryptoAssetPriceChartHeader(assetId: assetId),
-              Expanded(
-                child: CryptoAssetPriceChart(
-                  assetId: assetId,
-                  initialHistory: history,
-                ),
-              ),
-            ],
-          ),
-        ),
+        ],
       ),
     );
   }

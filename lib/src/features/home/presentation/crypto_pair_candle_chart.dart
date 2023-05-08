@@ -1,4 +1,3 @@
-import 'package:crypto_analytics/src/features/home/presentation/providers/crypto_asset_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -8,6 +7,7 @@ import 'package:syncfusion_flutter_charts/charts.dart';
 import '../../../theme.dart';
 import '../domain/crypto_binance_pair.dart';
 import '../domain/crypto_candle.dart';
+import 'providers/crypto_asset_provider.dart';
 
 class CryptoPairCandleChart extends HookConsumerWidget {
   const CryptoPairCandleChart({
@@ -18,7 +18,6 @@ class CryptoPairCandleChart extends HookConsumerWidget {
   final CryptoBinancePair pair;
 
   Widget buildCandleChart(List<CryptoCandle> candles) {
-    print(candles);
     return SfCartesianChart(
       // onTrackballPositionChanging: (args) {
       // final double? price = args.chartPointInfo.chartDataPoint?.y;
@@ -88,14 +87,6 @@ class CryptoPairCandleChart extends HookConsumerWidget {
     );
   }
 
-//   {
-//   required String exchange,
-//   required String baseId,
-//   required String quoteId,
-//   String interval = 'm1',
-//       int? start,
-//   int? end,
-// }
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     useAutomaticKeepAlive();
