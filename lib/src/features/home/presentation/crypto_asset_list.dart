@@ -1,9 +1,8 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:fpdart/fpdart.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../components/svg_logo_string.dart';
 import '../../../routing/app_router.dart';
 import '../../../theme.dart';
 import '../../../utils/extensions.dart';
@@ -66,10 +65,7 @@ class CryptoAssetList extends HookConsumerWidget {
         borderRadius: BorderRadius.circular(10),
         child: Row(
           children: [
-            asset.logoSvg.toOption().match(
-                  () => const SizedBox(width: 32, height: 32),
-                  (svg) => SvgPicture.string(svg, height: 32, width: 32),
-                ),
+            SvgLogoString(logo: asset.logoSvg, size: 32),
             const SizedBox(width: 12),
             Expanded(
               child: Column(

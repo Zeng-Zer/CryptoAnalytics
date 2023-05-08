@@ -3,8 +3,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../theme.dart';
 
-class SearchBar extends HookConsumerWidget {
-  const SearchBar({
+class ZSearchBar extends HookConsumerWidget {
+  const ZSearchBar({
     Key? key,
     this.controller,
     this.focusNode,

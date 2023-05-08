@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../../../components/search_bar.dart';
+import '../../../components/z_search_bar.dart';
+import '../domain/crypto_asset.dart';
 import 'crypto_asset_list.dart';
 import 'providers/crypto_asset_provider.dart';
 
@@ -13,17 +14,22 @@ class HomeScreen extends HookConsumerWidget {
     Key? key,
   }) : super(key: key);
 
+  // filter name and symbol based on search
+  List<CryptoAsset> filterCryptoAssetList(List<CryptoAsset> assets, String search) {
+    return assets
+        .where((asset) =>
+            asset.name.toLowerCase().startsWith(search.toLowerCase()) ||
+            asset.symbol.toLowerCase().startsWith(search.toLowerCase()))
+        .toList();
+  }
+
   Widget buildCryptoAssetList(WidgetRef ref, {String? search}) {
     return ref.watch(fetchAssetsProvider).when(
           loading: () => const Center(child: CircularProgressIndicator()),
           error: (err, stack) => Center(child: Text(err.toString())),
           data: (data) {
             if (search != null) {
-              data = data
-                  .where((asset) =>
-                      asset.name.toLowerCase().startsWith(search.toLowerCase()) ||
-                      asset.symbol.toLowerCase().startsWith(search.toLowerCase()))
-                  .toList();
+              data = filterCryptoAssetList(data, search);
             }
             return CryptoAssetList(assets: data);
           },
@@ -45,7 +51,7 @@ class HomeScreen extends HookConsumerWidget {
             children: [
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 4, 16, 0),
-                child: SearchBar(
+                child: ZSearchBar(
                   hint: 'Search tokens',
                   focusNode: focusNode,
                   controller: controller,

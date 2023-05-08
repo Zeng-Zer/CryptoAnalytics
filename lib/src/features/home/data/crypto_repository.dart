@@ -5,18 +5,20 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../constants/data_exception.dart';
 import '../domain/crypto_asset.dart';
 import '../domain/crypto_asset_history.dart';
+import '../domain/crypto_binance_pair.dart';
+import '../domain/crypto_candle.dart';
 
 // Wrap dio response, deserialize json and return a TaskEither
 extension CoinCapApi on Future<Response> {
-  TaskEither<DataException, R> wrap<R, T>(R Function(T) parseJson) => TaskEither.tryCatch(
+  TaskEither<DataException, R> wrapCoinCap<R, T>(R Function(T) parseJson) => TaskEither.tryCatch(
         () => then((value) => parseJson(value.data['data'])),
-        (err, stackTrace) => DataException(message: err.toString(), stackTrace: stackTrace),
+        (err, stackTrace) => DataException.fromDioError(err as DioError, stackTrace),
       );
 }
 
-extension SimpleSwapApi on Future<Response> {
-  TaskEither<DataException, T> rawData<T>() => TaskEither.tryCatch(
-        () => then((value) => value.data),
+extension Api on Future<Response> {
+  TaskEither<DataException, R> wrap<R>({R Function(dynamic)? parseJson}) => TaskEither.tryCatch(
+        () => then((value) => (parseJson == null) ? value.data : parseJson(value.data)),
         (err, stackTrace) => DataException(message: err.toString(), stackTrace: stackTrace),
       );
 }
@@ -30,13 +32,15 @@ class CryptoRepository {
     ),
   );
 
+  // COINCAP API
   String coinCapBaseUrl = 'https://api.coincap.io/v2';
   String assetsUrl = '/assets';
+  String marketsUrl = '/markets';
 
   TaskEither<DataException, List<CryptoAsset>> fetchAssets() {
     return _dio
         .get(coinCapBaseUrl + assetsUrl) //
-        .wrap<List<CryptoAsset>, List>(
+        .wrapCoinCap<List<CryptoAsset>, List>(
           (assets) => assets.map((json) => CryptoAsset.fromJson(json)).toList(),
         );
   }
@@ -44,23 +48,62 @@ class CryptoRepository {
   TaskEither<DataException, CryptoAsset> fetchAsset(String assetId) {
     return _dio
         .get('$coinCapBaseUrl$assetsUrl/$assetId')
-        .wrap<CryptoAsset, dynamic>((json) => CryptoAsset.fromJson(json));
+        .wrapCoinCap<CryptoAsset, dynamic>((json) => CryptoAsset.fromJson(json));
   }
 
   TaskEither<DataException, List<CryptoAssetHistory>> fetchAssetHistory(String assetId) {
     return _dio.get('$coinCapBaseUrl$assetsUrl/$assetId/history', queryParameters: {
       'interval': 'm1',
-      // 'start': DateTime.now().subtract(const Duration(days: 1)).millisecondsSinceEpoch,
-      // 'end': DateTime.now().millisecondsSinceEpoch,
-    }).wrap<List<CryptoAssetHistory>, List>(
+    }).wrapCoinCap<List<CryptoAssetHistory>, List>(
       (assets) => assets.map((json) => CryptoAssetHistory.fromJson(json)).toList(),
     );
   }
 
-  TaskEither<DataException, String> fetchAssetLogo(String symbol) {
+  TaskEither<DataException, String?> fetchAssetLogo(String symbol) {
     return _dio
         .get('https://static.simpleswap.io/images/currencies-logo/${symbol.toLowerCase()}.svg')
-        .rawData<String>();
+        .onError(
+          (err, __) => Response<String?>(data: null, requestOptions: RequestOptions()),
+          test: (e) =>
+              e is DioError && e.type == DioErrorType.badResponse && e.response!.statusCode == 404,
+        )
+        .wrap<String?>();
+  }
+
+  // BINANCE API
+  String binanceBaseUrl = 'https://api.binance.com/api/v3';
+  String exchangeInfoUrl = '/exchangeInfo';
+  String priceTickerUrl = '/ticker/price';
+  String klinesUrl = '/klines';
+
+  TaskEither<DataException, List<CryptoBinancePair>> fetchBinancePairs() {
+    return TaskEither.tryCatch(
+      () => _dio.get(binanceBaseUrl + exchangeInfoUrl).then((value) =>
+          (value.data['symbols'] as List)
+              .map((symbol) => CryptoBinancePair.fromJson(symbol))
+              .toList()),
+      (err, stackTrace) => DataException.fromDioError(err as DioError, stackTrace),
+    );
+  }
+
+  TaskEither<DataException, double> fetchBinanceSymbolPrice(String symbol) {
+    return _dio.get(binanceBaseUrl + priceTickerUrl, queryParameters: {'symbol': symbol}).wrap(
+      parseJson: (json) => double.parse(json['price']),
+    );
+  }
+
+  TaskEither<DataException, List<CryptoCandle>> fetchCandles({
+    required String symbol,
+    required String interval,
+  }) {
+    return _dio.get(binanceBaseUrl + klinesUrl, queryParameters: {
+      'symbol': symbol,
+      'interval': interval,
+      'limit': 1000,
+    }).wrap<List<CryptoCandle>>(parseJson: (json) {
+      final list = json as List<dynamic>;
+      return list.map((candle) => CryptoCandle.fromList(candle as List<dynamic>)).toList();
+    });
   }
 }
 

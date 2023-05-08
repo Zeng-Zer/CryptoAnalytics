@@ -1,8 +1,6 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:fpdart/fpdart.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
@@ -12,8 +10,8 @@ import '../../../utils/extensions.dart';
 import '../domain/crypto_asset_history.dart';
 import 'providers/crypto_asset_provider.dart';
 
-class CryptoAssetChart extends ConsumerStatefulWidget {
-  const CryptoAssetChart({
+class CryptoAssetPriceChart extends ConsumerStatefulWidget {
+  const CryptoAssetPriceChart({
     Key? key,
     required this.assetId,
     required this.initialHistory,
@@ -26,7 +24,8 @@ class CryptoAssetChart extends ConsumerStatefulWidget {
   ConsumerState createState() => _CryptoAssetChartState();
 }
 
-class _CryptoAssetChartState extends ConsumerState<CryptoAssetChart> {
+class _CryptoAssetChartState extends ConsumerState<CryptoAssetPriceChart>
+    with AutomaticKeepAliveClientMixin {
   late List<CryptoAssetHistory> history;
   ChartSeriesController? _chartSeriesController;
   late double maxValue;
@@ -66,7 +65,7 @@ class _CryptoAssetChartState extends ConsumerState<CryptoAssetChart> {
     final diffIdx = history.indexWhere((e) => e.time == newHistory.first.time);
     final removedIndexes = List.generate(diffIdx, (index) => index);
     for (var i in removedIndexes) {
-      print('removing ${history[i].time.asDateTime}');
+      print('removing ${history[i].time.asDateTime} $i');
       history.removeAt(i);
     }
 
@@ -74,7 +73,7 @@ class _CryptoAssetChartState extends ConsumerState<CryptoAssetChart> {
     final lastDiffIdx = newHistory.indexWhere((e) => e.time == history.last.time) + 1;
     final addedIndexes = [for (var i = lastDiffIdx; i < newHistory.length; i++) i];
     for (var i in addedIndexes) {
-      print('Adding ${newHistory[i].time.asDateTime}');
+      print('Adding ${newHistory[i].time.asDateTime} $i');
       history.add(newHistory[i]);
     }
 
@@ -120,16 +119,16 @@ class _CryptoAssetChartState extends ConsumerState<CryptoAssetChart> {
         lineWidth: 1,
         lineDashArray: const [5, 5],
       ),
-      zoomPanBehavior: ZoomPanBehavior(
-        enablePanning: true,
-      ),
+      // zoomPanBehavior: ZoomPanBehavior(
+      //   enablePanning: true,
+      // ),
       primaryXAxis: DateTimeAxis(
         dateFormat: DateFormat.Hm(),
         autoScrollingMode: AutoScrollingMode.end,
         enableAutoIntervalOnZooming: false,
         majorGridLines: const MajorGridLines(width: 0),
-        autoScrollingDelta: 10,
-        autoScrollingDeltaType: DateTimeIntervalType.hours,
+        // autoScrollingDelta: 10,
+        // autoScrollingDeltaType: DateTimeIntervalType.hours,
         interval: 2,
         labelStyle: textTheme().labelSmall?.copyWith(color: blueGrey.shade600),
       ),
@@ -163,6 +162,9 @@ class _CryptoAssetChartState extends ConsumerState<CryptoAssetChart> {
       ],
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
 
 class CryptoAssetPriceChartHeader extends HookConsumerWidget {
@@ -198,69 +200,65 @@ class CryptoAssetPriceChartHeader extends HookConsumerWidget {
       skipLoadingOnReload: true,
       error: (error, stackTrace) => Text(error.toString()),
       loading: () => const Center(child: CircularProgressIndicator()),
-      data: (asset) => Row(
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
-            child: asset.logoSvg.toOption().match(
-                  () => const SizedBox(width: 32, height: 32),
-                  (svg) => SvgPicture.string(svg, height: 32, width: 32),
-                ),
-          ),
-          Column(
-            children: [
-              Text(
-                'Price Chart',
-                style: textTheme().bodyMedium?.copyWith(color: blueGrey.shade600),
-                textAlign: TextAlign.left,
-              ),
-              Text(
-                asset.priceUsd.asCryptoCurrency,
-                style: textTheme().titleLarge,
-                textAlign: TextAlign.left,
-              ),
-              buildPriceChange(asset.changePercent24Hr),
-            ],
-          ),
-        ],
+      data: (asset) => Container(
+        alignment: Alignment.centerLeft,
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'Price Chart (24h)',
+              style: textTheme().bodyMedium?.copyWith(color: blueGrey.shade600),
+              textAlign: TextAlign.left,
+            ),
+            Text(
+              asset.priceUsd.asCryptoCurrency,
+              style: textTheme().titleLarge,
+              textAlign: TextAlign.left,
+            ),
+            buildPriceChange(asset.changePercent24Hr),
+          ],
+        ),
       ),
     );
   }
 }
 
-class CryptoAssetGraph extends HookConsumerWidget {
-  const CryptoAssetGraph({
+class CryptoAssetPriceGraph extends HookConsumerWidget {
+  const CryptoAssetPriceGraph({
     Key? key,
     required this.assetId,
   }) : super(key: key);
 
   final String assetId;
 
-  Widget buildCryptoAssetChart(WidgetRef ref) {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
     final history = ref.watch(fetchAssetHistoryProvider(assetId: assetId));
     return history.when(
       error: (error, stackTrace) => Text(error.toString()),
       loading: () => const Center(child: CircularProgressIndicator()),
-      data: (history) => CryptoAssetChart(assetId: assetId, initialHistory: history),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Container(
-        padding: const EdgeInsets.only(top: 20.0, left: 8, right: 8),
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.all(Radius.circular(12)),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            CryptoAssetPriceChartHeader(assetId: assetId),
-            buildCryptoAssetChart(ref),
-          ],
+      data: (history) => Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        child: Container(
+          padding: const EdgeInsets.only(top: 12.0, left: 8, right: 8),
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.all(Radius.circular(12)),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              CryptoAssetPriceChartHeader(assetId: assetId),
+              Expanded(
+                child: CryptoAssetPriceChart(
+                  assetId: assetId,
+                  initialHistory: history,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

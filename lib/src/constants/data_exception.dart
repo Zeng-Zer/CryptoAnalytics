@@ -6,7 +6,7 @@ class DataException implements Exception {
   String message = '';
   StackTrace? stackTrace;
 
-  DataException.fromDioError(DioError dioError) {
+  DataException.fromDioError(DioError dioError, StackTrace stackTrace) {
     switch (dioError.type) {
       case DioErrorType.connectionTimeout:
         message = 'errorConnectionTimeout';
@@ -33,6 +33,8 @@ class DataException implements Exception {
         message = 'errorInternetConnection';
         break;
     }
+    print(message);
+    print(stackTrace);
   }
 
   String _handleError(int statusCode) {

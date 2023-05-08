@@ -16,8 +16,8 @@ extension Intersperse<T> on Iterable<T> {
   }
 }
 
-extension NullableFunction<R, T> on R Function(T) {
-  R? nullable(T? value) => value == null ? null : this(value);
+extension NullableFunction<R, T> on R Function(T)? {
+  R? nullable(T? value) => (value == null || this == null) ? null : this!(value);
 }
 
 extension NullableExtensions<R, T> on T? {
@@ -29,6 +29,7 @@ extension NumberFomatted on num? {
   String get asCompactCurrency => compactCurrency.format(this);
   String get asCryptoCurrency => cryptoCurrency(this).format(this);
   String get asDecimal => decimal.format(this);
+  String get asCryptoDecimal => cryptoDecimalFormat(this);
   String get asPercentage => this == null ? '' : '${this!.toStringAsFixed(2)}%';
 }
 

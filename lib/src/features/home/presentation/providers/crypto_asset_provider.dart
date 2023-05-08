@@ -6,14 +6,20 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../constants/data_exception.dart';
 import '../../../../utils/extensions.dart';
+import '../../../../utils/ref_extensions.dart';
 import '../../data/crypto_repository.dart';
 import '../../domain/crypto_asset.dart';
 import '../../domain/crypto_asset_history.dart';
+import '../../domain/crypto_binance_pair.dart';
+import '../../domain/crypto_candle.dart';
+import '../crypto_screen.dart';
 
 part 'crypto_asset_provider.g.dart';
 
+// COINCAP API
+
 @riverpod
-Future<String> fetchLogo(FetchLogoRef ref, String symbol) async {
+Future<String?> fetchLogo(FetchLogoRef ref, String symbol) async {
   print('fetch asset logo $symbol');
   ref.keepAlive();
   return ref.read(cryptoRepositoryProvider).fetchAssetLogo(symbol).unwrap();
@@ -23,10 +29,7 @@ Future<String> fetchLogo(FetchLogoRef ref, String symbol) async {
 Future<List<CryptoAsset>> fetchAssets(FetchAssetsRef ref) async {
   print('fetchAssets');
 
-  // refresh every 10 sec
-  Timer(const Duration(seconds: 10), () {
-    ref.invalidateSelf();
-  });
+  ref.refreshAfter(const Duration(seconds: 10));
 
   return ref
       .read(cryptoRepositoryProvider)
@@ -46,14 +49,6 @@ Future<CryptoAsset> fetchAsset(FetchAssetRef ref, String assetId) async {
   print('fetch assets $assetId');
   final assets = await ref.watch(fetchAssetsProvider.future);
   return assets.firstWhere((asset) => asset.id == assetId);
-  // return ref
-  //     .read(cryptoRepositoryProvider)
-  //     .fetchAsset(assetId)
-  //     // Add logo to asset
-  //     .flatMap(
-  //       (asset) => _addAssetLogo(asset, () => ref.watch(fetchLogoProvider(asset.symbol).future)),
-  //     )
-  //     .unwrap();
 }
 
 @riverpod
@@ -61,13 +56,77 @@ Future<List<CryptoAssetHistory>> fetchAssetHistory(FetchAssetHistoryRef ref,
     {required String assetId, bool refresh = false}) async {
   print('fetch Assets History');
 
+  final history = await ref.read(cryptoRepositoryProvider).fetchAssetHistory(assetId).unwrap();
+
   if (refresh) {
-    Timer(const Duration(seconds: 5), () {
-      ref.invalidateSelf();
-    });
+    ref.refreshAfter(const Duration(seconds: 55));
   }
 
-  return ref.read(cryptoRepositoryProvider).fetchAssetHistory(assetId).unwrap();
+  return history;
+}
+
+// BINANCE API
+@riverpod
+Future<List<CryptoBinancePair>> fetchBinancePairs(FetchBinancePairsRef ref) async {
+  print('fetch binance pairs');
+  final pairs = await ref.read(cryptoRepositoryProvider).fetchBinancePairs().unwrap();
+  ref.keepAlive();
+  return pairs;
+}
+
+@riverpod
+Future<List<CryptoBinancePair>> fetchBinancePairsByBaseSymbol(
+  FetchBinancePairsByBaseSymbolRef ref,
+  String baseSymbol,
+) async {
+  final allPairs = await ref.watch(fetchBinancePairsProvider.future);
+  final pairs = allPairs.where((pair) => pair.baseAsset == baseSymbol).toList();
+  final updatedPairs = await Future.wait(
+    pairs.map((pair) => ref
+        .read(cryptoRepositoryProvider)
+        .fetchBinanceSymbolPrice(pair.symbol)
+        .unwrap()
+        .then((price) => pair.copyWith(priceQuote: price))),
+  );
+  return updatedPairs;
+}
+
+@riverpod
+Future<List<CryptoCandle>> fetchCandles(
+  FetchCandlesRef ref, {
+  required String symbol,
+  String interval = '1m',
+}) async {
+  print('fetch candles');
+  ref.refreshAfter(const Duration(seconds: 55));
+  return ref
+      .read(cryptoRepositoryProvider)
+      .fetchCandles(symbol: symbol, interval: interval)
+      .unwrap();
+}
+
+@riverpod
+class CryptoPairSelection extends _$CryptoPairSelection {
+  @override
+  CryptoBinancePair? build() {
+    return null;
+  }
+
+  void select(CryptoBinancePair pair) {
+    state = pair;
+  }
+}
+
+@riverpod
+class CryptoPriceOrCandleSelection extends _$CryptoPriceOrCandleSelection {
+  @override
+  PriceCandleState build() {
+    return PriceCandleState.price;
+  }
+
+  void toggle() {
+    state = state == PriceCandleState.price ? PriceCandleState.candle : PriceCandleState.price;
+  }
 }
 
 TaskEither<DataException, CryptoAsset> _addAssetLogo(

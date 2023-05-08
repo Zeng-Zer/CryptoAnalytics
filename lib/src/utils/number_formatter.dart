@@ -12,24 +12,24 @@ NumberFormat currencyWithDigit(int digit) => NumberFormat.currency(
       symbol: '\$',
     );
 
+String cryptoDecimalFormat(num? value) {
+  if (value == null) return '';
+  if (value >= 1000) return value.toStringAsFixed(0);
+  if (value >= 100) return value.toStringAsFixed(1);
+  if (value >= 10) return value.toStringAsFixed(2);
+  if (value >= 1) return value.toStringAsFixed(3);
+  if (value == 0) return value.toStringAsFixed(4);
+
+  final firstDigitPosition = log(value) / ln10;
+  return value.toStringAsFixed(4 - firstDigitPosition.round());
+}
+
 NumberFormat cryptoCurrency(num? value) {
   if (value == null) return currencyWithDigit(2);
-
-  if (value >= 1000) {
-    return currencyWithDigit(0);
-  }
-
-  if (value >= 100) {
-    return currencyWithDigit(1);
-  }
-
-  if (value >= 10) {
-    return currencyWithDigit(2);
-  }
-
-  if (value >= 1) {
-    return currencyWithDigit(3);
-  }
+  if (value >= 1000) return currencyWithDigit(0);
+  if (value >= 100) return currencyWithDigit(1);
+  if (value >= 10) return currencyWithDigit(2);
+  if (value >= 1) return currencyWithDigit(3);
 
   final firstDigitPosition = log(value) / ln10;
   return currencyWithDigit(4 - firstDigitPosition.round());
