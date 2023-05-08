@@ -1,6 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'crypto_order.freezed.dart';
+part 'crypto_order.g.dart';
 
 @freezed
 class CryptoOrderBidAsk with _$CryptoOrderBidAsk {
@@ -22,19 +23,17 @@ class CryptoOrderBidAsk with _$CryptoOrderBidAsk {
 class CryptoOrder with _$CryptoOrder {
   const factory CryptoOrder({
     required int lastUpdateId,
-    required List<CryptoOrderBidAsk> bids,
-    required List<CryptoOrderBidAsk> asks,
+
+    // Ignore toJson serialization
+    @JsonKey(fromJson: parseCryptoOrderBidAskList, includeToJson: false)
+        required List<CryptoOrderBidAsk> bids,
+    @JsonKey(fromJson: parseCryptoOrderBidAskList, includeToJson: false)
+        required List<CryptoOrderBidAsk> asks,
   }) = _CryptoOrder;
 
-  factory CryptoOrder.fromJson(List<dynamic> json) {
-    return CryptoOrder(
-      lastUpdateId: json[0] as int,
-      bids: (json[1] as List<dynamic>)
-          .map((e) => CryptoOrderBidAsk.fromList(e as List<dynamic>))
-          .toList(),
-      asks: (json[2] as List<dynamic>)
-          .map((e) => CryptoOrderBidAsk.fromList(e as List<dynamic>))
-          .toList(),
-    );
-  }
+  factory CryptoOrder.fromJson(Map<String, dynamic> json) => _$CryptoOrderFromJson(json);
+}
+
+List<CryptoOrderBidAsk> parseCryptoOrderBidAskList(List<dynamic> list) {
+  return list.map((e) => CryptoOrderBidAsk.fromList(e as List<dynamic>)).toList();
 }

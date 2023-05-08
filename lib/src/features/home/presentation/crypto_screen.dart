@@ -39,18 +39,19 @@ class CryptoScreen extends HookConsumerWidget {
     );
 
     final actions = [
-      if (selectedPair != null)
-        IconButton(
-          onPressed: () {
-            final newState = ref.read(cryptoPriceOrCandleSelectionProvider.notifier).toggle();
-            pageController.jumpToPage(newState.index);
-          },
-          icon: Icon(
-            selectedState == PriceCandleState.price
-                ? Icons.candlestick_chart_outlined
-                : Icons.attach_money,
-          ),
+      IconButton(
+        onPressed: selectedPair == null
+            ? null
+            : () {
+                final newState = ref.read(cryptoPriceOrCandleSelectionProvider.notifier).toggle();
+                pageController.jumpToPage(newState.index);
+              },
+        icon: Icon(
+          selectedState == PriceCandleState.price
+              ? Icons.candlestick_chart_outlined
+              : Icons.attach_money,
         ),
+      )
     ];
 
     final pages = [

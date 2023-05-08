@@ -497,6 +497,88 @@ class FetchCandlesProvider
   }
 }
 
+String _$fetchOrderBookHash() => r'ddf885e31a0e95ed913f24385273769ab614f5c0';
+typedef FetchOrderBookRef = AutoDisposeFutureProviderRef<CryptoOrder>;
+
+/// See also [fetchOrderBook].
+@ProviderFor(fetchOrderBook)
+const fetchOrderBookProvider = FetchOrderBookFamily();
+
+/// See also [fetchOrderBook].
+class FetchOrderBookFamily extends Family<AsyncValue<CryptoOrder>> {
+  /// See also [fetchOrderBook].
+  const FetchOrderBookFamily();
+
+  /// See also [fetchOrderBook].
+  FetchOrderBookProvider call(
+    String symbol,
+  ) {
+    return FetchOrderBookProvider(
+      symbol,
+    );
+  }
+
+  @override
+  FetchOrderBookProvider getProviderOverride(
+    covariant FetchOrderBookProvider provider,
+  ) {
+    return call(
+      provider.symbol,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'fetchOrderBookProvider';
+}
+
+/// See also [fetchOrderBook].
+class FetchOrderBookProvider extends AutoDisposeFutureProvider<CryptoOrder> {
+  /// See also [fetchOrderBook].
+  FetchOrderBookProvider(
+    this.symbol,
+  ) : super.internal(
+          (ref) => fetchOrderBook(
+            ref,
+            symbol,
+          ),
+          from: fetchOrderBookProvider,
+          name: r'fetchOrderBookProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$fetchOrderBookHash,
+          dependencies: FetchOrderBookFamily._dependencies,
+          allTransitiveDependencies:
+              FetchOrderBookFamily._allTransitiveDependencies,
+        );
+
+  final String symbol;
+
+  @override
+  bool operator ==(Object other) {
+    return other is FetchOrderBookProvider && other.symbol == symbol;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, symbol.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
 String _$cryptoPairSelectionHash() =>
     r'4cfaa3cbcd99f3f744ad4816ab4fe7f4c03036fd';
 

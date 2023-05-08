@@ -111,7 +111,7 @@ class CryptoRepository {
   TaskEither<DataException, CryptoOrder> fetchOrderBook(String symbol) {
     return _dio.get(binanceBaseUrl + orderBookUrl, queryParameters: {
       'symbol': symbol,
-      'limit': 20,
+      'limit': 40,
     }).wrap<CryptoOrder>(parseJson: (json) => CryptoOrder.fromJson(json));
   }
 }

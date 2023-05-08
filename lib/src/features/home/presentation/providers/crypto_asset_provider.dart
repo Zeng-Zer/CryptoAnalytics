@@ -12,6 +12,7 @@ import '../../domain/crypto_asset.dart';
 import '../../domain/crypto_asset_history.dart';
 import '../../domain/crypto_binance_pair.dart';
 import '../../domain/crypto_candle.dart';
+import '../../domain/crypto_order.dart';
 import '../crypto_screen.dart';
 
 part 'crypto_asset_provider.g.dart';
@@ -103,6 +104,14 @@ Future<List<CryptoCandle>> fetchCandles(
       .read(cryptoRepositoryProvider)
       .fetchCandles(symbol: symbol, interval: interval)
       .unwrap();
+}
+
+@riverpod
+Future<CryptoOrder> fetchOrderBook(FetchOrderBookRef ref, String symbol) async {
+  print('fetch order book for $symbol');
+  final orderBook = await ref.read(cryptoRepositoryProvider).fetchOrderBook(symbol).unwrap();
+  ref.refreshAfter(const Duration(seconds: 1));
+  return orderBook;
 }
 
 @riverpod

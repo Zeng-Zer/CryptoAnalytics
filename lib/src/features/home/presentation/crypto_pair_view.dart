@@ -35,8 +35,11 @@ class CryptoPairView extends HookConsumerWidget {
                 PaddedContainer(
                   child: CryptoPairList(assetSymbol: pair.baseAsset),
                 ),
-                PaddedContainer(
-                  child: CryptoOrderBook(symbol: pair.symbol),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: PaddedContainer(
+                    child: CryptoOrderBook(symbol: pair.symbol),
+                  ),
                 ),
               ],
             ),

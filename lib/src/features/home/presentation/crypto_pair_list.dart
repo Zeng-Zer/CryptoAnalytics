@@ -14,9 +14,9 @@ class CryptoPairBox extends HookConsumerWidget {
     required this.pair,
   }) : super(key: key);
 
-  static const width = 120.0;
+  static const width = 115.0;
   static const baseLogoSize = 20.0;
-  static const quoteLogoSize = 12.0;
+  static const quoteLogoSize = 14.0;
 
   final CryptoBinancePair pair;
 
@@ -27,7 +27,6 @@ class CryptoPairBox extends HookConsumerWidget {
     const borderRadius = BorderRadius.all(Radius.circular(12));
     final isSelected = ref.watch(cryptoPairSelectionProvider(pair.baseAsset)) == pair;
     return Container(
-      width: width,
       decoration: BoxDecoration(
         color: !isSelected ? violet.shade50 : violet.shade200.withOpacity(0.7),
         borderRadius: borderRadius,
@@ -50,7 +49,7 @@ class CryptoPairBox extends HookConsumerWidget {
               children: [
                 CryptoExchangePair(
                   pair: pair,
-                  baseLogoSize: baseLogoSize,
+                  baseLogoSize: quoteLogoSize,
                   quoteLogoSize: quoteLogoSize,
                   textStyle: textTheme().labelSmall?.copyWith(color: blueGrey.shade600),
                 ),
@@ -58,6 +57,7 @@ class CryptoPairBox extends HookConsumerWidget {
                 Text(
                   pair.priceQuote.asCryptoDecimal,
                   overflow: TextOverflow.ellipsis,
+                  style: textTheme().labelSmall,
                 ),
               ],
             ),
@@ -88,7 +88,7 @@ class CryptoPairList extends HookConsumerWidget {
     );
   }
 
-  Widget buildPairList(WidgetRef ref, List<CryptoBinancePair> pairs) {
+  Widget buildPairList(List<CryptoBinancePair> pairs) {
     return ListView.separated(
       separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 4),
       itemCount: pairs.length,
@@ -114,7 +114,7 @@ class CryptoPairList extends HookConsumerWidget {
           children: [
             buildHeader(),
             const Divider(indent: 10, endIndent: 10),
-            Expanded(child: buildPairList(ref, pairs)),
+            Expanded(child: buildPairList(pairs)),
           ],
         ),
       ),

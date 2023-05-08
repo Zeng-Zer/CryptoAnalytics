@@ -151,12 +151,20 @@ abstract class _CryptoOrderBidAsk implements CryptoOrderBidAsk {
       throw _privateConstructorUsedError;
 }
 
+CryptoOrder _$CryptoOrderFromJson(Map<String, dynamic> json) {
+  return _CryptoOrder.fromJson(json);
+}
+
 /// @nodoc
 mixin _$CryptoOrder {
-  int get lastUpdateId => throw _privateConstructorUsedError;
+  int get lastUpdateId =>
+      throw _privateConstructorUsedError; // Ignore toJson serialization
+  @JsonKey(fromJson: parseCryptoOrderBidAskList, includeToJson: false)
   List<CryptoOrderBidAsk> get bids => throw _privateConstructorUsedError;
+  @JsonKey(fromJson: parseCryptoOrderBidAskList, includeToJson: false)
   List<CryptoOrderBidAsk> get asks => throw _privateConstructorUsedError;
 
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
   $CryptoOrderCopyWith<CryptoOrder> get copyWith =>
       throw _privateConstructorUsedError;
@@ -170,8 +178,10 @@ abstract class $CryptoOrderCopyWith<$Res> {
   @useResult
   $Res call(
       {int lastUpdateId,
-      List<CryptoOrderBidAsk> bids,
-      List<CryptoOrderBidAsk> asks});
+      @JsonKey(fromJson: parseCryptoOrderBidAskList, includeToJson: false)
+          List<CryptoOrderBidAsk> bids,
+      @JsonKey(fromJson: parseCryptoOrderBidAskList, includeToJson: false)
+          List<CryptoOrderBidAsk> asks});
 }
 
 /// @nodoc
@@ -218,8 +228,10 @@ abstract class _$$_CryptoOrderCopyWith<$Res>
   @useResult
   $Res call(
       {int lastUpdateId,
-      List<CryptoOrderBidAsk> bids,
-      List<CryptoOrderBidAsk> asks});
+      @JsonKey(fromJson: parseCryptoOrderBidAskList, includeToJson: false)
+          List<CryptoOrderBidAsk> bids,
+      @JsonKey(fromJson: parseCryptoOrderBidAskList, includeToJson: false)
+          List<CryptoOrderBidAsk> asks});
 }
 
 /// @nodoc
@@ -255,19 +267,27 @@ class __$$_CryptoOrderCopyWithImpl<$Res>
 }
 
 /// @nodoc
-
+@JsonSerializable()
 class _$_CryptoOrder implements _CryptoOrder {
   const _$_CryptoOrder(
       {required this.lastUpdateId,
-      required final List<CryptoOrderBidAsk> bids,
-      required final List<CryptoOrderBidAsk> asks})
+      @JsonKey(fromJson: parseCryptoOrderBidAskList, includeToJson: false)
+          required final List<CryptoOrderBidAsk> bids,
+      @JsonKey(fromJson: parseCryptoOrderBidAskList, includeToJson: false)
+          required final List<CryptoOrderBidAsk> asks})
       : _bids = bids,
         _asks = asks;
 
+  factory _$_CryptoOrder.fromJson(Map<String, dynamic> json) =>
+      _$$_CryptoOrderFromJson(json);
+
   @override
   final int lastUpdateId;
+// Ignore toJson serialization
   final List<CryptoOrderBidAsk> _bids;
+// Ignore toJson serialization
   @override
+  @JsonKey(fromJson: parseCryptoOrderBidAskList, includeToJson: false)
   List<CryptoOrderBidAsk> get bids {
     if (_bids is EqualUnmodifiableListView) return _bids;
     // ignore: implicit_dynamic_type
@@ -276,6 +296,7 @@ class _$_CryptoOrder implements _CryptoOrder {
 
   final List<CryptoOrderBidAsk> _asks;
   @override
+  @JsonKey(fromJson: parseCryptoOrderBidAskList, includeToJson: false)
   List<CryptoOrderBidAsk> get asks {
     if (_asks is EqualUnmodifiableListView) return _asks;
     // ignore: implicit_dynamic_type
@@ -298,6 +319,7 @@ class _$_CryptoOrder implements _CryptoOrder {
             const DeepCollectionEquality().equals(other._asks, _asks));
   }
 
+  @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(
       runtimeType,
@@ -310,19 +332,33 @@ class _$_CryptoOrder implements _CryptoOrder {
   @pragma('vm:prefer-inline')
   _$$_CryptoOrderCopyWith<_$_CryptoOrder> get copyWith =>
       __$$_CryptoOrderCopyWithImpl<_$_CryptoOrder>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$_CryptoOrderToJson(
+      this,
+    );
+  }
 }
 
 abstract class _CryptoOrder implements CryptoOrder {
   const factory _CryptoOrder(
       {required final int lastUpdateId,
-      required final List<CryptoOrderBidAsk> bids,
-      required final List<CryptoOrderBidAsk> asks}) = _$_CryptoOrder;
+      @JsonKey(fromJson: parseCryptoOrderBidAskList, includeToJson: false)
+          required final List<CryptoOrderBidAsk> bids,
+      @JsonKey(fromJson: parseCryptoOrderBidAskList, includeToJson: false)
+          required final List<CryptoOrderBidAsk> asks}) = _$_CryptoOrder;
+
+  factory _CryptoOrder.fromJson(Map<String, dynamic> json) =
+      _$_CryptoOrder.fromJson;
 
   @override
   int get lastUpdateId;
-  @override
+  @override // Ignore toJson serialization
+  @JsonKey(fromJson: parseCryptoOrderBidAskList, includeToJson: false)
   List<CryptoOrderBidAsk> get bids;
   @override
+  @JsonKey(fromJson: parseCryptoOrderBidAskList, includeToJson: false)
   List<CryptoOrderBidAsk> get asks;
   @override
   @JsonKey(ignore: true)
