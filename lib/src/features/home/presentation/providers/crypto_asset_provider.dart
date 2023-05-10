@@ -13,6 +13,7 @@ import '../../domain/crypto_asset_history.dart';
 import '../../domain/crypto_binance_pair.dart';
 import '../../domain/crypto_candle.dart';
 import '../../domain/crypto_order.dart';
+import '../../domain/crypto_ticker.dart';
 import '../crypto_screen.dart';
 
 part 'crypto_asset_provider.g.dart';
@@ -90,6 +91,14 @@ Future<List<CryptoBinancePair>> fetchBinancePairsByBaseSymbol(
         .then((price) => pair.copyWith(priceQuote: price))),
   );
   return updatedPairs;
+}
+
+@riverpod
+Future<CryptoTicker> fetchTicker(FetchTickerRef ref, String symbol) async {
+  print('fetch binance ticker');
+  final ticker = ref.read(cryptoRepositoryProvider).fetchBinanceTicker24h(symbol).unwrap();
+  ref.refreshAfter(const Duration(seconds: 1));
+  return ticker;
 }
 
 @riverpod

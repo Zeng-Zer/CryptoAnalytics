@@ -8,6 +8,7 @@ import '../domain/crypto_asset_history.dart';
 import '../domain/crypto_binance_pair.dart';
 import '../domain/crypto_candle.dart';
 import '../domain/crypto_order.dart';
+import '../domain/crypto_ticker.dart';
 
 // Wrap dio response, deserialize json and return a TaskEither
 extension CoinCapApi on Future<Response> {
@@ -75,6 +76,7 @@ class CryptoRepository {
   String binanceBaseUrl = 'https://api.binance.com/api/v3';
   String exchangeInfoUrl = '/exchangeInfo';
   String priceTickerUrl = '/ticker/price';
+  String ticker24hrUrl = '/ticker/24hr';
   String klinesUrl = '/klines';
   String orderBookUrl = '/depth';
 
@@ -91,6 +93,12 @@ class CryptoRepository {
   TaskEither<DataException, double> fetchBinanceSymbolPrice(String symbol) {
     return _dio.get(binanceBaseUrl + priceTickerUrl, queryParameters: {'symbol': symbol}).wrap(
       parseJson: (json) => double.parse(json['price']),
+    );
+  }
+
+  TaskEither<DataException, CryptoTicker> fetchBinanceTicker24h(String symbol) {
+    return _dio.get(binanceBaseUrl + ticker24hrUrl, queryParameters: {'symbol': symbol}).wrap(
+      parseJson: (json) => CryptoTicker.fromJson(json),
     );
   }
 

@@ -405,6 +405,88 @@ class FetchBinancePairsByBaseSymbolProvider
   }
 }
 
+String _$fetchTickerHash() => r'fcbddf0ab71a0b45abc6fc841dd61f38d065b802';
+typedef FetchTickerRef = AutoDisposeFutureProviderRef<CryptoTicker>;
+
+/// See also [fetchTicker].
+@ProviderFor(fetchTicker)
+const fetchTickerProvider = FetchTickerFamily();
+
+/// See also [fetchTicker].
+class FetchTickerFamily extends Family<AsyncValue<CryptoTicker>> {
+  /// See also [fetchTicker].
+  const FetchTickerFamily();
+
+  /// See also [fetchTicker].
+  FetchTickerProvider call(
+    String symbol,
+  ) {
+    return FetchTickerProvider(
+      symbol,
+    );
+  }
+
+  @override
+  FetchTickerProvider getProviderOverride(
+    covariant FetchTickerProvider provider,
+  ) {
+    return call(
+      provider.symbol,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'fetchTickerProvider';
+}
+
+/// See also [fetchTicker].
+class FetchTickerProvider extends AutoDisposeFutureProvider<CryptoTicker> {
+  /// See also [fetchTicker].
+  FetchTickerProvider(
+    this.symbol,
+  ) : super.internal(
+          (ref) => fetchTicker(
+            ref,
+            symbol,
+          ),
+          from: fetchTickerProvider,
+          name: r'fetchTickerProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$fetchTickerHash,
+          dependencies: FetchTickerFamily._dependencies,
+          allTransitiveDependencies:
+              FetchTickerFamily._allTransitiveDependencies,
+        );
+
+  final String symbol;
+
+  @override
+  bool operator ==(Object other) {
+    return other is FetchTickerProvider && other.symbol == symbol;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, symbol.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
 String _$fetchCandlesHash() => r'3fbc25c2a3e80fefcce3f16fd8804b6a034d5d04';
 typedef FetchCandlesRef = AutoDisposeFutureProviderRef<List<CryptoCandle>>;
 

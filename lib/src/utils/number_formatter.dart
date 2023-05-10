@@ -7,6 +7,8 @@ final compactCurrency = NumberFormat.compactCurrency(
   symbol: '\$',
 );
 
+final compact = NumberFormat.compact();
+
 NumberFormat currencyWithDigit(int digit) => NumberFormat.currency(
       decimalDigits: digit,
       symbol: '\$',
