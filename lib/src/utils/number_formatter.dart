@@ -16,6 +16,7 @@ NumberFormat currencyWithDigit(int digit) => NumberFormat.currency(
 
 String cryptoDecimalFormat(num? value) {
   if (value == null) return '';
+  if (value >= 100000) return value.toStringAsFixed(0);
   if (value >= 100) return value.toStringAsFixed(1);
   if (value >= 10) return value.toStringAsFixed(2);
   if (value >= 1) return value.toStringAsFixed(3);
@@ -27,6 +28,7 @@ String cryptoDecimalFormat(num? value) {
 
 NumberFormat cryptoCurrency(num? value) {
   if (value == null) return currencyWithDigit(2);
+  if (value >= 100000) return currencyWithDigit(0);
   if (value >= 100) return currencyWithDigit(1);
   if (value >= 10) return currencyWithDigit(2);
   if (value >= 1) return currencyWithDigit(3);

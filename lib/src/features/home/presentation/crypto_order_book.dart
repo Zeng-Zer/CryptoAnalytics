@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../theme.dart';
+import '../../../utils/extensions.dart';
 import '../domain/crypto_order.dart';
 import 'providers/crypto_asset_provider.dart';
 
@@ -30,7 +31,7 @@ class CryptoOrderBook extends HookConsumerWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Price',
+                      'Quantity',
                       style: textTheme().labelSmall?.copyWith(color: blueGrey.shade500),
                     ),
                     Text(
@@ -50,7 +51,7 @@ class CryptoOrderBook extends HookConsumerWidget {
                       style: textTheme().labelSmall?.copyWith(color: Colors.red),
                     ),
                     Text(
-                      'Price',
+                      'Quantity',
                       style: textTheme().labelSmall?.copyWith(color: blueGrey.shade500),
                     ),
                   ],
@@ -66,7 +67,7 @@ class CryptoOrderBook extends HookConsumerWidget {
   Widget buildRow(CryptoOrderBidAsk bidAsk, Color color, bool reverse) {
     final style = textTheme().labelSmall?.copyWith(letterSpacing: -0.8);
     final texts = [
-      Text('${bidAsk.quantity} ', style: style),
+      Text(bidAsk.quantity.asCryptoDecimal, style: style),
       Text('${bidAsk.price}', style: style?.copyWith(color: color)),
     ];
     return Row(
@@ -76,23 +77,28 @@ class CryptoOrderBook extends HookConsumerWidget {
   }
 
   Widget buildList(CryptoOrder book) {
-    if (book.bids.isEmpty || book.asks.isEmpty) {
+    if (book.bids.isEmpty && book.asks.isEmpty) {
       return const Center(child: Text('This pair has no orders yet.'));
     }
 
+    // max length of bids and asks
+    final maxLength = book.bids.length > book.asks.length ? book.bids.length : book.asks.length;
+
     return ListView.builder(
-      itemCount: book.bids.length,
+      itemCount: maxLength,
       itemBuilder: (context, index) {
-        final bid = book.bids[index];
-        final ask = book.asks[index];
+        final bid = index >= book.bids.length ? null : book.bids.elementAt(index);
+        final ask = index >= book.asks.length ? null : book.asks.elementAt(index);
         return Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Expanded(
-              child: buildRow(bid, Colors.green, false),
+              child: (bid != null) ? buildRow(bid, Colors.green, false) : const SizedBox.shrink(),
             ),
             const SizedBox(width: 4),
-            Expanded(child: buildRow(ask, Colors.red, true)),
+            Expanded(
+              child: (ask != null) ? buildRow(ask, Colors.red, true) : const SizedBox.shrink(),
+            ),
           ],
         );
       },

@@ -11,6 +11,7 @@ class PaddedContainer extends StatelessWidget {
     this.margin,
     this.padding = innerSpacing,
     this.color = Colors.white,
+    this.foregroundColor,
   }) : super(key: key);
 
   final Widget child;
@@ -19,6 +20,7 @@ class PaddedContainer extends StatelessWidget {
   final EdgeInsets? margin;
   final EdgeInsets? padding;
   final Color color;
+  final Color? foregroundColor;
 
   @override
   Widget build(BuildContext context) {
@@ -27,6 +29,12 @@ class PaddedContainer extends StatelessWidget {
       width: width,
       margin: margin,
       padding: padding,
+      foregroundDecoration: foregroundColor != null
+          ? BoxDecoration(
+              color: foregroundColor,
+              borderRadius: circularBorder,
+            )
+          : null,
       decoration: BoxDecoration(
         color: color,
         borderRadius: circularBorder,

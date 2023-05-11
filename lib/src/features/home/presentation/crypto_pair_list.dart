@@ -12,13 +12,14 @@ class CryptoPairBox extends HookConsumerWidget {
   const CryptoPairBox({
     Key? key,
     required this.pair,
+    required this.isExpanded,
   }) : super(key: key);
 
-  static const width = 115.0;
-  static const baseLogoSize = 20.0;
-  static const quoteLogoSize = 14.0;
+  static const expandedWidth = 200.0;
+  static const width = 80.0;
 
   final CryptoBinancePair pair;
+  final bool isExpanded;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -38,27 +39,29 @@ class CryptoPairBox extends HookConsumerWidget {
               ? null
               : () {
                   ref.read(cryptoPairSelectionProvider(pair.baseAsset).notifier).select(pair);
+                  ref.read(cryptoExpandPairsProvider.notifier).collapse();
                   print('selected pair ${pair.baseAsset} ${pair.baseAsset}');
                 },
           borderRadius: borderRadius,
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
+            child: Row(
+              mainAxisSize: MainAxisSize.max,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 CryptoExchangePair(
+                  isExpanded: isExpanded,
                   pair: pair,
-                  baseLogoSize: quoteLogoSize,
-                  quoteLogoSize: quoteLogoSize,
-                  textStyle: textTheme().labelSmall?.copyWith(color: blueGrey.shade600),
+                  logoSize: 14,
                 ),
-                const SizedBox(height: 8),
-                Text(
-                  pair.priceQuote.asCryptoDecimal,
-                  overflow: TextOverflow.ellipsis,
-                  style: textTheme().labelSmall,
-                ),
+                if (isExpanded) ...[
+                  const Spacer(),
+                  Text(
+                    pair.priceQuote.asCryptoDecimal,
+                    overflow: TextOverflow.ellipsis,
+                    style: textTheme().labelSmall,
+                  ),
+                ],
               ],
             ),
           ),
@@ -76,26 +79,39 @@ class CryptoPairList extends HookConsumerWidget {
 
   final String assetSymbol;
 
-  Widget buildHeader() {
-    return Container(
+  Widget buildHeader(CryptoExpandPairs expandNotifier, bool isExpanded) {
+    final icon = isExpanded ? Icons.keyboard_double_arrow_left : Icons.keyboard_double_arrow_right;
+    return Stack(
       alignment: Alignment.center,
-      width: CryptoPairBox.width,
-      padding: const EdgeInsets.all(4),
-      child: Text(
-        'Pairs | Price',
-        style: textTheme().titleSmall?.copyWith(color: blueGrey.shade500),
-      ),
+      children: [
+        Align(
+          alignment: Alignment.centerLeft,
+          child: Padding(
+            padding: const EdgeInsets.only(left: 8.0),
+            child: Text('Pairs', style: textTheme().titleSmall?.copyWith(color: blueGrey.shade500)),
+          ),
+        ),
+        Positioned(
+          right: 0,
+          child: IconButton(
+            icon: Icon(icon, color: blueGrey.shade500),
+            iconSize: 20,
+            visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
+            onPressed: () => expandNotifier.toggle(),
+          ),
+        ),
+      ],
     );
   }
 
-  Widget buildPairList(List<CryptoBinancePair> pairs) {
+  Widget buildPairList(List<CryptoBinancePair> pairs, bool isExpanded) {
     return ListView.separated(
       separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 4),
       itemCount: pairs.length,
       itemBuilder: (context, index) {
         final pair = pairs[index];
         if (pair.priceQuote == 0) return const SizedBox();
-        return CryptoPairBox(pair: pair);
+        return CryptoPairBox(pair: pair, isExpanded: isExpanded);
       },
     );
   }
@@ -103,18 +119,20 @@ class CryptoPairList extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final pairs = ref.watch(fetchBinancePairsByBaseSymbolProvider(assetSymbol));
+    final expandNotifier = ref.read(cryptoExpandPairsProvider.notifier);
+    final isExpanded = ref.watch(cryptoExpandPairsProvider);
     return pairs.when(
       skipLoadingOnReload: true,
       error: (error, stackTrace) => Text(error.toString()),
       loading: () => const Center(child: CircularProgressIndicator()),
       data: (pairs) => SizedBox(
-        width: CryptoPairBox.width,
+        width: isExpanded ? CryptoPairBox.expandedWidth : CryptoPairBox.width,
         child: Column(
-          mainAxisSize: MainAxisSize.min,
+          mainAxisSize: MainAxisSize.max,
           children: [
-            buildHeader(),
+            buildHeader(expandNotifier, isExpanded),
             const Divider(indent: 10, endIndent: 10),
-            Expanded(child: buildPairList(pairs)),
+            Expanded(child: buildPairList(pairs, isExpanded)),
           ],
         ),
       ),

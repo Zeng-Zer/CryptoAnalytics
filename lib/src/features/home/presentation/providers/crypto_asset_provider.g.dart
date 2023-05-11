@@ -776,4 +776,20 @@ final cryptoPriceOrCandleSelectionProvider = AutoDisposeNotifierProvider<
 );
 
 typedef _$CryptoPriceOrCandleSelection = AutoDisposeNotifier<PriceCandleState>;
+String _$cryptoExpandPairsHash() => r'10b5201cdb0c10076436fbed16427530bf6413eb';
+
+/// See also [CryptoExpandPairs].
+@ProviderFor(CryptoExpandPairs)
+final cryptoExpandPairsProvider =
+    AutoDisposeNotifierProvider<CryptoExpandPairs, bool>.internal(
+  CryptoExpandPairs.new,
+  name: r'cryptoExpandPairsProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$cryptoExpandPairsHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef _$CryptoExpandPairs = AutoDisposeNotifier<bool>;
 // ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions

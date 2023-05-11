@@ -150,6 +150,24 @@ class CryptoPriceOrCandleSelection extends _$CryptoPriceOrCandleSelection {
   }
 }
 
+@riverpod
+class CryptoExpandPairs extends _$CryptoExpandPairs {
+  @override
+  bool build() {
+    return false;
+  }
+
+  void toggle() {
+    state = !state;
+  }
+
+  void collapse() {
+    state = false;
+  }
+}
+
+// HELPERS
+
 TaskEither<DataException, CryptoAsset> _addAssetLogo(
     CryptoAsset asset, Future<String?> Function() fetchLogo) {
   final assetWithLogo = TaskOption.tryCatch(() async {
