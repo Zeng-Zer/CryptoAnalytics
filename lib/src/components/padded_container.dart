@@ -5,7 +5,7 @@ import '../constants.dart';
 class PaddedContainer extends StatelessWidget {
   const PaddedContainer({
     Key? key,
-    required this.child,
+    this.child,
     this.height,
     this.width,
     this.margin,
@@ -14,7 +14,7 @@ class PaddedContainer extends StatelessWidget {
     this.foregroundColor,
   }) : super(key: key);
 
-  final Widget child;
+  final Widget? child;
   final double? height;
   final double? width;
   final EdgeInsets? margin;

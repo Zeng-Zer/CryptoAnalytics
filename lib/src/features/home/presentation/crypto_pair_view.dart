@@ -10,6 +10,7 @@ import '../domain/crypto_ticker.dart';
 import 'crypto_order_book.dart';
 import 'crypto_pair_candle_chart.dart';
 import 'crypto_pair_list.dart';
+import 'crypto_price_change.dart';
 import 'providers/crypto_asset_provider.dart';
 
 class CryptoPairInfo extends ConsumerWidget {
@@ -19,12 +20,6 @@ class CryptoPairInfo extends ConsumerWidget {
   }) : super(key: key);
 
   final CryptoBinancePair pair;
-
-  Widget buildPriceChange(double? change) {
-    if (change == null) return const SizedBox.shrink();
-    final color = change >= 0 ? Colors.green : Colors.red;
-    return Text(change.asPercentage, style: textTheme().labelLarge?.copyWith(color: color));
-  }
 
   Widget buildSymbolInfo(CryptoTicker ticker) {
     final labelStyle = textTheme().labelSmall?.copyWith(color: blueGrey.shade400);
@@ -40,7 +35,6 @@ class CryptoPairInfo extends ConsumerWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Rich text with baseAsset and smaller size text quoteAsset
               RichText(
                 text: TextSpan(
                   text: '${pair.baseAsset}/',
@@ -53,13 +47,11 @@ class CryptoPairInfo extends ConsumerWidget {
                   ],
                 ),
               ),
-              // Text('${pair.baseAsset}/${pair.quoteAsset}',
-              //     style: textTheme().headlineSmall?.copyWith(color: blueGrey.shade600)),
               const SizedBox(width: 4),
               Text(pair.priceQuote.asCryptoDecimal,
                   style: textTheme().bodyLarge?.copyWith(color: blueGrey.shade600)),
               const SizedBox(width: 4),
-              buildPriceChange(ticker.priceChangePercent),
+              CryptoPriceChange(change: ticker.priceChangePercent, style: textTheme().labelLarge),
             ],
           ),
           const Spacer(),
@@ -148,9 +140,7 @@ class CryptoPairView extends HookConsumerWidget {
               children: [
                 Row(
                   children: [
-                    const PaddedContainer(
-                      child: SizedBox(width: CryptoPairBox.width),
-                    ),
+                    SizedBox(width: CryptoPairBox.width + innerSpacing.horizontal),
                     const SizedBox(width: 8),
                     Expanded(
                       child: GestureDetector(

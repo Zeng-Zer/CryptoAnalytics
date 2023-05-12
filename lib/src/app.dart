@@ -5,14 +5,22 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import 'features/home/presentation/providers/crypto_asset_provider.dart';
+
 class MyApp extends ConsumerWidget {
   const MyApp({super.key});
+
+  void initGlobalFutureProviders(WidgetRef ref) {
+    ref.read(fetchIdSymbolsMapProvider);
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final appRouter = ref.watch(appRouterProvider);
     final authRepo = ref.watch(authRepositoryProvider);
     final themeData = ref.watch(themeDataProvider);
+
+    initGlobalFutureProviders(ref);
 
     return MaterialApp.router(
       theme: themeData,

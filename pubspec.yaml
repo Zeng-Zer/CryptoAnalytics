@@ -55,6 +55,8 @@ dependencies:
   syncfusion_flutter_datagrid: ^21.1.41
   syncfusion_flutter_charts: ^21.2.3
   collection: ^1.17.0
+  web_socket_channel: ^2.4.0
+  async: ^2.11.0
 
 dev_dependencies:
   flutter_test:

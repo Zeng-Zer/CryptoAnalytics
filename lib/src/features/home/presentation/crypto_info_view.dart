@@ -3,8 +3,10 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../components/padded_container.dart';
 import '../../../constants.dart';
+import '../../../theme.dart';
 import '../domain/crypto_asset.dart';
 import 'crypto_asset_price_graph.dart';
+import 'crypto_trades_view.dart';
 
 class CryptoInfoView extends HookConsumerWidget {
   const CryptoInfoView({
@@ -22,15 +24,37 @@ class CryptoInfoView extends HookConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           PaddedContainer(
-            child: CryptoAssetPriceChartHeader(assetId: asset.id),
+            padding: graphInnerSpacing,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                CryptoAssetPriceChartHeader(assetId: asset.id),
+                const SizedBox(height: 8),
+                SizedBox(
+                  height: graphHeight,
+                  child: CryptoAssetPriceGraph(assetId: asset.id),
+                ),
+              ],
+            ),
           ),
           const SizedBox(height: 8),
-          PaddedContainer(
-            height: graphHeight,
-            padding: graphInnerSpacing,
-            child: CryptoAssetPriceGraph(assetId: asset.id),
+          Expanded(
+            child: PaddedContainer(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Center(
+                    child: Text(
+                      'Realtime trades',
+                      style: textTheme().titleMedium?.copyWith(color: blueGrey.shade600),
+                    ),
+                  ),
+                  const Divider(indent: 10, endIndent: 10),
+                  Expanded(child: CryptoTradesView(assetId: asset.id)),
+                ],
+              ),
+            ),
           ),
-          Text(asset.symbol),
         ],
       ),
     );

@@ -9,6 +9,7 @@ import '../../../routing/app_router.dart';
 import '../../../theme.dart';
 import '../../../utils/extensions.dart';
 import '../domain/crypto_asset.dart';
+import 'crypto_price_change.dart';
 
 class CryptoAssetList extends HookConsumerWidget {
   const CryptoAssetList({
@@ -22,22 +23,6 @@ class CryptoAssetList extends HookConsumerWidget {
   final priceChangeWidth = 110.0;
   final volumeWidth = 110.0;
   final marketCapWidth = 90.0;
-
-  Widget buildPriceChange(double? change, TextStyle? contentStyle) {
-    if (change == null) return const SizedBox.shrink();
-    final color = change >= 0 ? Colors.green : Colors.red;
-    final changeAbs = change.abs();
-    return Row(
-      children: [
-        Icon(
-          change >= 0 ? Icons.arrow_drop_up : Icons.arrow_drop_down,
-          color: color,
-          size: 24,
-        ),
-        Text(changeAbs.asPercentage, style: contentStyle?.copyWith(color: color)),
-      ],
-    );
-  }
 
   Widget buildHeader() {
     final headerStyle = textTheme().titleSmall?.copyWith(color: blueGrey.shade500);
@@ -104,7 +89,12 @@ class CryptoAssetList extends HookConsumerWidget {
         ),
         SizedBox(
           width: priceChangeWidth,
-          child: buildPriceChange(asset.changePercent24Hr, contentStyle),
+          child: CryptoPriceChange(
+            change: asset.changePercent24Hr ?? 0.0,
+            style: contentStyle,
+            iconUp: Icons.arrow_drop_up,
+            iconDown: Icons.arrow_drop_down,
+          ),
         ),
         SizedBox(
           width: volumeWidth,

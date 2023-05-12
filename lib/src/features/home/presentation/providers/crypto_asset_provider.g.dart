@@ -6,7 +6,38 @@ part of 'crypto_asset_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$fetchLogoHash() => r'01073842b46a86ead3245507cc3caa3995b4943c';
+String _$fetchIdSymbolsMapHash() => r'676b60f7430518b8fb358816608f63f9c433fd53';
+
+/// See also [fetchIdSymbolsMap].
+@ProviderFor(fetchIdSymbolsMap)
+final fetchIdSymbolsMapProvider =
+    FutureProvider<Map<String, CryptoSymbol>>.internal(
+  fetchIdSymbolsMap,
+  name: r'fetchIdSymbolsMapProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$fetchIdSymbolsMapHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef FetchIdSymbolsMapRef = FutureProviderRef<Map<String, CryptoSymbol>>;
+String _$fetchAssetsHash() => r'e9011e41cc48ea24127626c6e439e5dcc8f97f36';
+
+/// See also [fetchAssets].
+@ProviderFor(fetchAssets)
+final fetchAssetsProvider =
+    AutoDisposeFutureProvider<List<CryptoAsset>>.internal(
+  fetchAssets,
+  name: r'fetchAssetsProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$fetchAssetsHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef FetchAssetsRef = AutoDisposeFutureProviderRef<List<CryptoAsset>>;
+String _$fetchAssetHash() => r'093d5dfe90d5c3e8d07e535307ee9c9af5974688';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -29,102 +60,6 @@ class _SystemHash {
   }
 }
 
-typedef FetchLogoRef = AutoDisposeFutureProviderRef<String?>;
-
-/// See also [fetchLogo].
-@ProviderFor(fetchLogo)
-const fetchLogoProvider = FetchLogoFamily();
-
-/// See also [fetchLogo].
-class FetchLogoFamily extends Family<AsyncValue<String?>> {
-  /// See also [fetchLogo].
-  const FetchLogoFamily();
-
-  /// See also [fetchLogo].
-  FetchLogoProvider call(
-    String symbol,
-  ) {
-    return FetchLogoProvider(
-      symbol,
-    );
-  }
-
-  @override
-  FetchLogoProvider getProviderOverride(
-    covariant FetchLogoProvider provider,
-  ) {
-    return call(
-      provider.symbol,
-    );
-  }
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'fetchLogoProvider';
-}
-
-/// See also [fetchLogo].
-class FetchLogoProvider extends AutoDisposeFutureProvider<String?> {
-  /// See also [fetchLogo].
-  FetchLogoProvider(
-    this.symbol,
-  ) : super.internal(
-          (ref) => fetchLogo(
-            ref,
-            symbol,
-          ),
-          from: fetchLogoProvider,
-          name: r'fetchLogoProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$fetchLogoHash,
-          dependencies: FetchLogoFamily._dependencies,
-          allTransitiveDependencies: FetchLogoFamily._allTransitiveDependencies,
-        );
-
-  final String symbol;
-
-  @override
-  bool operator ==(Object other) {
-    return other is FetchLogoProvider && other.symbol == symbol;
-  }
-
-  @override
-  int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, symbol.hashCode);
-
-    return _SystemHash.finish(hash);
-  }
-}
-
-String _$fetchAssetsHash() => r'e9011e41cc48ea24127626c6e439e5dcc8f97f36';
-
-/// See also [fetchAssets].
-@ProviderFor(fetchAssets)
-final fetchAssetsProvider =
-    AutoDisposeFutureProvider<List<CryptoAsset>>.internal(
-  fetchAssets,
-  name: r'fetchAssetsProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$fetchAssetsHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-typedef FetchAssetsRef = AutoDisposeFutureProviderRef<List<CryptoAsset>>;
-String _$fetchAssetHash() => r'9ece80336b726f6891305ecd3160a2e1f0d1ba27';
 typedef FetchAssetRef = AutoDisposeFutureProviderRef<CryptoAsset>;
 
 /// See also [fetchAsset].
@@ -300,12 +235,200 @@ class FetchAssetHistoryProvider
   }
 }
 
-String _$fetchBinancePairsHash() => r'4c4e810468c169f8902b204069ac15dc4168acb7';
+String _$fetchExchangesSocketHash() =>
+    r'cf852b870318668b4cf22bc19e3981c0f104d137';
+
+/// See also [fetchExchangesSocket].
+@ProviderFor(fetchExchangesSocket)
+final fetchExchangesSocketProvider = FutureProvider<Set<String>>.internal(
+  fetchExchangesSocket,
+  name: r'fetchExchangesSocketProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$fetchExchangesSocketHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef FetchExchangesSocketRef = FutureProviderRef<Set<String>>;
+String _$cryptoTradeHash() => r'b82e8666d34d25444ece19e1e1dc60119aa3d497';
+typedef CryptoTradeRef = AutoDisposeStreamProviderRef<List<CryptoTrade>>;
+
+/// See also [cryptoTrade].
+@ProviderFor(cryptoTrade)
+const cryptoTradeProvider = CryptoTradeFamily();
+
+/// See also [cryptoTrade].
+class CryptoTradeFamily extends Family<AsyncValue<List<CryptoTrade>>> {
+  /// See also [cryptoTrade].
+  const CryptoTradeFamily();
+
+  /// See also [cryptoTrade].
+  CryptoTradeProvider call({
+    String exchange = 'binance',
+    required String assetId,
+  }) {
+    return CryptoTradeProvider(
+      exchange: exchange,
+      assetId: assetId,
+    );
+  }
+
+  @override
+  CryptoTradeProvider getProviderOverride(
+    covariant CryptoTradeProvider provider,
+  ) {
+    return call(
+      exchange: provider.exchange,
+      assetId: provider.assetId,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'cryptoTradeProvider';
+}
+
+/// See also [cryptoTrade].
+class CryptoTradeProvider extends AutoDisposeStreamProvider<List<CryptoTrade>> {
+  /// See also [cryptoTrade].
+  CryptoTradeProvider({
+    this.exchange = 'binance',
+    required this.assetId,
+  }) : super.internal(
+          (ref) => cryptoTrade(
+            ref,
+            exchange: exchange,
+            assetId: assetId,
+          ),
+          from: cryptoTradeProvider,
+          name: r'cryptoTradeProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$cryptoTradeHash,
+          dependencies: CryptoTradeFamily._dependencies,
+          allTransitiveDependencies:
+              CryptoTradeFamily._allTransitiveDependencies,
+        );
+
+  final String exchange;
+  final String assetId;
+
+  @override
+  bool operator ==(Object other) {
+    return other is CryptoTradeProvider &&
+        other.exchange == exchange &&
+        other.assetId == assetId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, exchange.hashCode);
+    hash = _SystemHash.combine(hash, assetId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+String _$fetchLogoHash() => r'01073842b46a86ead3245507cc3caa3995b4943c';
+typedef FetchLogoRef = AutoDisposeFutureProviderRef<String?>;
+
+/// See also [fetchLogo].
+@ProviderFor(fetchLogo)
+const fetchLogoProvider = FetchLogoFamily();
+
+/// See also [fetchLogo].
+class FetchLogoFamily extends Family<AsyncValue<String?>> {
+  /// See also [fetchLogo].
+  const FetchLogoFamily();
+
+  /// See also [fetchLogo].
+  FetchLogoProvider call(
+    String symbol,
+  ) {
+    return FetchLogoProvider(
+      symbol,
+    );
+  }
+
+  @override
+  FetchLogoProvider getProviderOverride(
+    covariant FetchLogoProvider provider,
+  ) {
+    return call(
+      provider.symbol,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'fetchLogoProvider';
+}
+
+/// See also [fetchLogo].
+class FetchLogoProvider extends AutoDisposeFutureProvider<String?> {
+  /// See also [fetchLogo].
+  FetchLogoProvider(
+    this.symbol,
+  ) : super.internal(
+          (ref) => fetchLogo(
+            ref,
+            symbol,
+          ),
+          from: fetchLogoProvider,
+          name: r'fetchLogoProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$fetchLogoHash,
+          dependencies: FetchLogoFamily._dependencies,
+          allTransitiveDependencies: FetchLogoFamily._allTransitiveDependencies,
+        );
+
+  final String symbol;
+
+  @override
+  bool operator ==(Object other) {
+    return other is FetchLogoProvider && other.symbol == symbol;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, symbol.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+String _$fetchBinancePairsHash() => r'ff766a154ac521fb36e1a45dc8c25f080381d6ef';
 
 /// See also [fetchBinancePairs].
 @ProviderFor(fetchBinancePairs)
 final fetchBinancePairsProvider =
-    AutoDisposeFutureProvider<List<CryptoBinancePair>>.internal(
+    FutureProvider<List<CryptoBinancePair>>.internal(
   fetchBinancePairs,
   name: r'fetchBinancePairsProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -315,10 +438,9 @@ final fetchBinancePairsProvider =
   allTransitiveDependencies: null,
 );
 
-typedef FetchBinancePairsRef
-    = AutoDisposeFutureProviderRef<List<CryptoBinancePair>>;
+typedef FetchBinancePairsRef = FutureProviderRef<List<CryptoBinancePair>>;
 String _$fetchBinancePairsByBaseSymbolHash() =>
-    r'45979ef924b9f2088cd333c426b464cd480d9daa';
+    r'47d4a245b4dca76d98d7ec47374c462af1abf07c';
 typedef FetchBinancePairsByBaseSymbolRef
     = AutoDisposeFutureProviderRef<List<CryptoBinancePair>>;
 

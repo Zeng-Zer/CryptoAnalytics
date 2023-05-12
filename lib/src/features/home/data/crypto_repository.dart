@@ -8,6 +8,7 @@ import '../domain/crypto_asset_history.dart';
 import '../domain/crypto_binance_pair.dart';
 import '../domain/crypto_candle.dart';
 import '../domain/crypto_order.dart';
+import '../domain/crypto_symbol.dart';
 import '../domain/crypto_ticker.dart';
 
 // Wrap dio response, deserialize json and return a TaskEither
@@ -35,15 +36,47 @@ class CryptoRepository {
   );
 
   // COINCAP API
-  String coinCapBaseUrl = 'https://api.coincap.io/v2';
-  String assetsUrl = '/assets';
-  String marketsUrl = '/markets';
+  static const String coinCapBaseUrl = 'https://api.coincap.io/v2';
+  static const String assetsUrl = '/assets';
+  static const String marketsUrl = '/markets';
+  static const String exchangesUrl = '/exchanges';
+  static const String ratesUrl = '/rates';
+  static const String coinCapTradeWs = 'wss://ws.coincap.io/trades';
 
-  TaskEither<DataException, List<CryptoAsset>> fetchAssets() {
-    return _dio
-        .get(coinCapBaseUrl + assetsUrl) //
-        .wrapCoinCap<List<CryptoAsset>, List>(
-          (assets) => assets.map((json) => CryptoAsset.fromJson(json)).toList(),
+  TaskEither<DataException, List<CryptoAsset>> fetchAssets({int limit = 100, int offset = 0}) {
+    return _dio.get(coinCapBaseUrl + assetsUrl,
+        queryParameters: {'limit': limit, 'offset': offset}).wrapCoinCap<List<CryptoAsset>, List>(
+      (assets) => assets.map((json) => CryptoAsset.fromJson(json)).toList(),
+    );
+  }
+
+  TaskEither<DataException, Map<String, CryptoSymbol>> fetchIdSymbolsMap(
+      {int limit = 100, int offset = 0}) {
+    return _dio.get(coinCapBaseUrl + assetsUrl, queryParameters: {
+      'limit': limit,
+      'offset': offset
+    }).wrapCoinCap<Map<String, CryptoSymbol>, List>(
+      (assets) => Map.fromEntries(
+        assets.map(
+          (json) {
+            final symbol = CryptoSymbol.fromJson(json);
+            return MapEntry(symbol.id, symbol);
+          },
+        ),
+      ),
+    );
+  }
+
+  TaskEither<DataException, Map<String, CryptoSymbol>> fetchIdRatesMap() {
+    return _dio.get(coinCapBaseUrl + ratesUrl).wrapCoinCap<Map<String, CryptoSymbol>, List>(
+          (assets) => Map.fromEntries(
+            assets.map(
+              (json) {
+                final symbol = CryptoSymbol.fromJson(json);
+                return MapEntry(symbol.id, symbol);
+              },
+            ),
+          ),
         );
   }
 
@@ -51,6 +84,13 @@ class CryptoRepository {
     return _dio
         .get('$coinCapBaseUrl$assetsUrl/$assetId')
         .wrapCoinCap<CryptoAsset, dynamic>((json) => CryptoAsset.fromJson(json));
+  }
+
+  TaskEither<DataException, Set<String>> fetchExchangesSocket() {
+    return _dio.get('$coinCapBaseUrl$exchangesUrl').wrapCoinCap<Set<String>, List>((json) => json
+        .map((e) => (e['socket'] as bool?) == true ? e['exchangeId'] as String : null)
+        .whereType<String>()
+        .toSet());
   }
 
   TaskEither<DataException, List<CryptoAssetHistory>> fetchAssetHistory(String assetId) {
@@ -73,12 +113,12 @@ class CryptoRepository {
   }
 
   // BINANCE API
-  String binanceBaseUrl = 'https://api.binance.com/api/v3';
-  String exchangeInfoUrl = '/exchangeInfo';
-  String priceTickerUrl = '/ticker/price';
-  String ticker24hrUrl = '/ticker/24hr';
-  String klinesUrl = '/klines';
-  String orderBookUrl = '/depth';
+  static const String binanceBaseUrl = 'https://api.binance.com/api/v3';
+  static const String exchangeInfoUrl = '/exchangeInfo';
+  static const String priceTickerUrl = '/ticker/price';
+  static const String ticker24hrUrl = '/ticker/24hr';
+  static const String klinesUrl = '/klines';
+  static const String orderBookUrl = '/depth';
 
   TaskEither<DataException, List<CryptoBinancePair>> fetchBinancePairs() {
     return TaskEither.tryCatch(

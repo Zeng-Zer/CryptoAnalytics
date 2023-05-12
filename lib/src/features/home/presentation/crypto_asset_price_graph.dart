@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -8,6 +6,7 @@ import 'package:syncfusion_flutter_charts/charts.dart';
 import '../../../theme.dart';
 import '../../../utils/extensions.dart';
 import '../domain/crypto_asset_history.dart';
+import 'crypto_price_change.dart';
 import 'providers/crypto_asset_provider.dart';
 
 class CryptoAssetPriceChart extends ConsumerStatefulWidget {
@@ -34,29 +33,11 @@ class _CryptoAssetChartState extends ConsumerState<CryptoAssetPriceChart>
   late double minYValue;
   late double yInterval;
 
-  void updateChartDimension({required bool init}) {
-    final maxValue = history.map((e) => e.priceUsd).reduce(max);
-    final minValue = history.map((e) => e.priceUsd).reduce(min);
-    final maxYValue = maxValue * 1.005;
-    final minYValue = minValue * 0.995;
-    final yInterval = (maxYValue - minYValue) * 0.99999 / 4;
-    if (init || maxValue != this.maxValue || minValue != this.minValue) {
-      setState(() {
-        this.maxValue = maxValue;
-        this.minValue = minValue;
-        this.maxYValue = maxYValue;
-        this.minYValue = minYValue;
-        this.yInterval = yInterval;
-      });
-    }
-  }
-
   @override
   void initState() {
     setState(() {
       history = widget.initialHistory;
     });
-    updateChartDimension(init: true);
     super.initState();
   }
 
@@ -76,8 +57,6 @@ class _CryptoAssetChartState extends ConsumerState<CryptoAssetPriceChart>
       print('Adding ${newHistory[i].time.asDateTime} $i');
       history.add(newHistory[i]);
     }
-
-    updateChartDimension(init: false);
 
     _chartSeriesController!.updateDataSource(
       addedDataIndexes: addedIndexes,
@@ -139,9 +118,10 @@ class _CryptoAssetChartState extends ConsumerState<CryptoAssetPriceChart>
         tickPosition: TickPosition.inside,
         labelPosition: ChartDataLabelPosition.inside,
         // isVisible: false,
-        maximum: maxYValue,
-        minimum: minYValue,
-        interval: yInterval,
+        rangePadding: ChartRangePadding.round,
+        anchorRangeToVisiblePoints: true,
+        enableAutoIntervalOnZooming: true,
+        desiredIntervals: 3,
         axisLine: const AxisLine(width: 0),
         majorTickLines: const MajorTickLines(size: 0),
         minorGridLines: const MinorGridLines(width: 0),
@@ -176,24 +156,6 @@ class CryptoAssetPriceChartHeader extends HookConsumerWidget {
 
   final String assetId;
 
-  Widget buildPriceChange(double? change) {
-    if (change == null) return const SizedBox.shrink();
-    final color = change >= 0 ? Colors.green : Colors.red;
-    final changeAbs = change.abs();
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(
-          change >= 0 ? Icons.trending_up : Icons.trending_down,
-          color: color,
-          size: 24,
-        ),
-        const SizedBox(width: 4),
-        Text(changeAbs.asPercentage, style: textTheme().labelLarge?.copyWith(color: color)),
-      ],
-    );
-  }
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final cryptoAsset = ref.watch(fetchAssetProvider(assetId));
@@ -202,11 +164,15 @@ class CryptoAssetPriceChartHeader extends HookConsumerWidget {
       error: (error, stackTrace) => Text(error.toString()),
       loading: () => const Center(child: CircularProgressIndicator()),
       data: (asset) => Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 8),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
+            Text(
+              '${asset.name} (${asset.symbol})',
+              style: textTheme().titleLarge?.copyWith(color: blueGrey.shade800),
+            ),
             Text(
               'Price Chart (24h)',
               style: textTheme().bodyMedium?.copyWith(color: blueGrey.shade600),
@@ -217,7 +183,10 @@ class CryptoAssetPriceChartHeader extends HookConsumerWidget {
               style: textTheme().titleLarge,
               textAlign: TextAlign.left,
             ),
-            buildPriceChange(asset.changePercent24Hr),
+            CryptoPriceChange(
+              change: asset.changePercent24Hr ?? 0,
+              style: textTheme().labelLarge,
+            ),
           ],
         ),
       ),
@@ -242,7 +211,6 @@ class CryptoAssetPriceGraph extends HookConsumerWidget {
       data: (history) => Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // CryptoAssetPriceChartHeader(assetId: assetId),
           Expanded(
             child: CryptoAssetPriceChart(
               assetId: assetId,

@@ -16,7 +16,7 @@ class CryptoPairBox extends HookConsumerWidget {
   }) : super(key: key);
 
   static const expandedWidth = 200.0;
-  static const width = 80.0;
+  static const width = 82.0;
 
   final CryptoBinancePair pair;
   final bool isExpanded;
