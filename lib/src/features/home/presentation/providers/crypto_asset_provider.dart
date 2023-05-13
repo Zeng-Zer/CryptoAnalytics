@@ -4,6 +4,7 @@ import 'dart:convert';
 
 import 'package:async/async.dart';
 import 'package:fpdart/fpdart.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
@@ -15,8 +16,8 @@ import '../../domain/crypto_asset.dart';
 import '../../domain/crypto_asset_history.dart';
 import '../../domain/crypto_binance_pair.dart';
 import '../../domain/crypto_candle.dart';
+import '../../domain/crypto_identifier.dart';
 import '../../domain/crypto_order.dart';
-import '../../domain/crypto_symbol.dart';
 import '../../domain/crypto_ticker.dart';
 import '../../domain/crypto_trade.dart';
 import '../crypto_screen.dart';
@@ -26,25 +27,60 @@ part 'crypto_asset_provider.g.dart';
 // COINCAP API
 
 @Riverpod(keepAlive: true)
-Future<Map<String, CryptoSymbol>> fetchIdSymbolsMap(FetchIdSymbolsMapRef ref) async {
-  print('fetchIdSymbolsMap');
+Future<List<CryptoIdentifier>> fetchCryptoIdentifiers(FetchCryptoIdentifiersRef ref) async {
+  print('fetchCryptoIdentifiers');
   const limit = 800;
+
   var offset = 0;
-  final result = <String, CryptoSymbol>{};
+  final result = <CryptoIdentifier>[];
   do {
     result.addAll(await ref
         .read(cryptoRepositoryProvider)
-        .fetchIdSymbolsMap(limit: limit, offset: offset)
+        .fetchCryptoIdentifiers(limit: limit, offset: offset)
         .unwrap());
     offset += limit;
   } while (result.length % limit == 0);
 
-  print('fetchIdSymbolsMap ${result.length}');
-
-  result.addAll(await ref.read(cryptoRepositoryProvider).fetchIdRatesMap().unwrap());
-
-  print('fetchIdSymbolsMap done ${result.length}');
+  print('fetchCryptoIdentifiers done ${result.length}');
   return result;
+}
+
+@Riverpod(keepAlive: true)
+Future<List<CryptoIdentifier>> fetchCryptoRateIdentifiers(FetchCryptoRateIdentifiersRef ref) async {
+  return ref.read(cryptoRepositoryProvider).fetchCryptoRateIdentifiers().unwrap();
+}
+
+@Riverpod(keepAlive: true)
+Future<Map<String, CryptoIdentifier>> fetchIdSymbolsMap(FetchIdSymbolsMapRef ref) async {
+  return {
+    ...{for (var e in await ref.watch(fetchCryptoIdentifiersProvider.future)) e.id: e},
+    ...{for (var e in await ref.watch(fetchCryptoRateIdentifiersProvider.future)) e.id: e},
+  };
+}
+
+@riverpod
+Future<List<CryptoAsset>> searchAssets(
+  SearchAssetsRef ref, {
+  String? search,
+  int limit = 100,
+  int offset = 0,
+}) async {
+  searchId() async {
+    if (search == null || search.isEmpty) return null;
+
+    return (await ref.watch(fetchCryptoIdentifiersProvider.future))
+        .where((identifier) =>
+            identifier.symbol.toLowerCase().startsWith(search.toLowerCase()) ||
+            identifier.name?.toLowerCase().startsWith(search.toLowerCase()) == true)
+        .map((identifier) => identifier.id)
+        .toSet();
+  }
+
+  return ref
+      .read(cryptoRepositoryProvider)
+      .fetchAssets(ids: await searchId(), limit: limit, offset: offset)
+      .flatMap((assets) => _addAssetLogos(ref, assets))
+      .unwrap();
 }
 
 @riverpod
@@ -56,26 +92,16 @@ Future<List<CryptoAsset>> fetchAssets(FetchAssetsRef ref) async {
   return ref
       .read(cryptoRepositoryProvider)
       .fetchAssets()
-      // Add logo to assets
-      .flatMap(
-        (assets) => assets
-            .map((asset) =>
-                _addAssetLogo(asset, () => ref.watch(fetchLogoProvider(asset.symbol).future)))
-            .sequenceTaskEither(),
-      )
+      .flatMap((assets) => _addAssetLogos(ref, assets))
       .unwrap();
 }
 
 @riverpod
 Future<CryptoAsset> fetchAsset(FetchAssetRef ref, String assetId) async {
   print('fetch assets $assetId');
-  final assets = await ref.watch(fetchAssetsProvider.future);
-  final assetIdx = assets.indexWhere((asset) => asset.id == assetId);
-  if (assetIdx == -1) {
-    return await ref.read(cryptoRepositoryProvider).fetchAsset(assetId).unwrap();
-  }
-
-  return assets[assetIdx];
+  final asset = await ref.read(cryptoRepositoryProvider).fetchAsset(assetId).unwrap();
+  ref.refreshAfter(const Duration(seconds: 5));
+  return asset;
 }
 
 @riverpod
@@ -131,10 +157,8 @@ Stream<List<CryptoTrade>> cryptoTrade(CryptoTradeRef ref,
           ...trades
         ];
         yield trades;
-        print('yielded');
       }
     }
-    print('yielded scope done');
   } catch (e, s) {
     print('error $e, $s');
     ref.invalidateSelf();
@@ -152,8 +176,7 @@ Future<String?> fetchLogo(FetchLogoRef ref, String symbol) async {
 @Riverpod(keepAlive: true)
 Future<List<CryptoBinancePair>> fetchBinancePairs(FetchBinancePairsRef ref) async {
   print('fetch binance pairs');
-  final pairs = await ref.read(cryptoRepositoryProvider).fetchBinancePairs().unwrap();
-  return pairs;
+  return await ref.read(cryptoRepositoryProvider).fetchBinancePairs().unwrap();
 }
 
 @riverpod
@@ -250,14 +273,16 @@ class CryptoExpandPairs extends _$CryptoExpandPairs {
 
 // HELPERS
 
-TaskEither<DataException, CryptoAsset> _addAssetLogo(
-    CryptoAsset asset, Future<String?> Function() fetchLogo) {
-  final assetWithLogo = TaskOption.tryCatch(() async {
-    final logo = await fetchLogo();
-    return asset.copyWith(logoSvg: logo);
-  });
-
-  return TaskEither<DataException, CryptoAsset>.fromTask(
-    assetWithLogo.getOrElse(() => asset),
-  );
+TaskEither<DataException, List<CryptoAsset>> _addAssetLogos(
+    AutoDisposeRef ref, List<CryptoAsset> assets) {
+  return assets
+      .map(
+        (asset) => TaskEither<DataException, CryptoAsset>.fromTask(
+          TaskOption.tryCatch(
+            () async =>
+                asset.copyWith(logoSvg: await ref.watch(fetchLogoProvider(asset.symbol).future)),
+          ).getOrElse(() => asset),
+        ),
+      )
+      .sequenceTaskEither();
 }

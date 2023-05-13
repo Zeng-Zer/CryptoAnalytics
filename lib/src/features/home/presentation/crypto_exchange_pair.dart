@@ -34,23 +34,21 @@ class CryptoExchangePair extends ConsumerWidget {
 
   Widget buildExpanded(Widget? baseLogo, Widget? quoteLogo) {
     final style = textTheme().labelSmall?.copyWith(color: blueGrey.shade600);
-    return IntrinsicHeight(
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (baseLogo != null) ...[
-            baseLogo,
-            const SizedBox(width: 4),
-          ],
-          Icon(Icons.swap_horiz, size: logoSize, color: blueGrey.shade600),
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (baseLogo != null) ...[
+          baseLogo,
           const SizedBox(width: 4),
-          if (quoteLogo != null) ...[
-            quoteLogo,
-            const SizedBox(width: 4),
-          ],
-          Text(pair.quoteAsset, style: style),
         ],
-      ),
+        Icon(Icons.swap_horiz, size: logoSize, color: blueGrey.shade600),
+        const SizedBox(width: 4),
+        if (quoteLogo != null) ...[
+          quoteLogo,
+          const SizedBox(width: 4),
+        ],
+        Text(pair.quoteAsset, style: style),
+      ],
     );
   }
 

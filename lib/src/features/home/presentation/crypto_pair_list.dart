@@ -17,6 +17,7 @@ class CryptoPairBox extends HookConsumerWidget {
 
   static const expandedWidth = 200.0;
   static const width = 82.0;
+  static const animationDuration = Duration(milliseconds: 400);
 
   final CryptoBinancePair pair;
   final bool isExpanded;
@@ -27,7 +28,8 @@ class CryptoPairBox extends HookConsumerWidget {
 
     const borderRadius = BorderRadius.all(Radius.circular(12));
     final isSelected = ref.watch(cryptoPairSelectionProvider(pair.baseAsset)) == pair;
-    return Container(
+    return AnimatedContainer(
+      duration: animationDuration,
       decoration: BoxDecoration(
         color: !isSelected ? violet.shade50 : violet.shade200.withOpacity(0.7),
         borderRadius: borderRadius,
@@ -125,7 +127,8 @@ class CryptoPairList extends HookConsumerWidget {
       skipLoadingOnReload: true,
       error: (error, stackTrace) => Text(error.toString()),
       loading: () => const Center(child: CircularProgressIndicator()),
-      data: (pairs) => SizedBox(
+      data: (pairs) => AnimatedContainer(
+        duration: CryptoPairBox.animationDuration,
         width: isExpanded ? CryptoPairBox.expandedWidth : CryptoPairBox.width,
         child: Column(
           mainAxisSize: MainAxisSize.max,

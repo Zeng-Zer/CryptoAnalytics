@@ -12,6 +12,7 @@ class MyApp extends ConsumerWidget {
 
   void initGlobalFutureProviders(WidgetRef ref) {
     ref.read(fetchIdSymbolsMapProvider);
+    ref.read(fetchBinancePairsProvider);
   }
 
   @override

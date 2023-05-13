@@ -109,7 +109,7 @@ class CryptoOrderBook extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final orderBook = ref.watch(fetchOrderBookProvider(symbol));
     return orderBook.when(
-      loading: () => const CircularProgressIndicator(),
+      loading: () => const Center(child: CircularProgressIndicator()),
       error: (error, stackTrace) => Text(error.toString()),
       data: (book) => Column(
         mainAxisSize: MainAxisSize.min,

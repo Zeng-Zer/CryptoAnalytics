@@ -6,12 +6,47 @@ part of 'crypto_asset_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$fetchIdSymbolsMapHash() => r'676b60f7430518b8fb358816608f63f9c433fd53';
+String _$fetchCryptoIdentifiersHash() =>
+    r'186bb2494b85c66cc7c2e0fc283795f62dec8054';
+
+/// See also [fetchCryptoIdentifiers].
+@ProviderFor(fetchCryptoIdentifiers)
+final fetchCryptoIdentifiersProvider =
+    FutureProvider<List<CryptoIdentifier>>.internal(
+  fetchCryptoIdentifiers,
+  name: r'fetchCryptoIdentifiersProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$fetchCryptoIdentifiersHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef FetchCryptoIdentifiersRef = FutureProviderRef<List<CryptoIdentifier>>;
+String _$fetchCryptoRateIdentifiersHash() =>
+    r'e5827b8f15ee3eb8733294a3187e071ccc00d0a9';
+
+/// See also [fetchCryptoRateIdentifiers].
+@ProviderFor(fetchCryptoRateIdentifiers)
+final fetchCryptoRateIdentifiersProvider =
+    FutureProvider<List<CryptoIdentifier>>.internal(
+  fetchCryptoRateIdentifiers,
+  name: r'fetchCryptoRateIdentifiersProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$fetchCryptoRateIdentifiersHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef FetchCryptoRateIdentifiersRef
+    = FutureProviderRef<List<CryptoIdentifier>>;
+String _$fetchIdSymbolsMapHash() => r'ff0b674bf853bddfda0098af1d65478fb583b06e';
 
 /// See also [fetchIdSymbolsMap].
 @ProviderFor(fetchIdSymbolsMap)
 final fetchIdSymbolsMapProvider =
-    FutureProvider<Map<String, CryptoSymbol>>.internal(
+    FutureProvider<Map<String, CryptoIdentifier>>.internal(
   fetchIdSymbolsMap,
   name: r'fetchIdSymbolsMapProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -21,23 +56,8 @@ final fetchIdSymbolsMapProvider =
   allTransitiveDependencies: null,
 );
 
-typedef FetchIdSymbolsMapRef = FutureProviderRef<Map<String, CryptoSymbol>>;
-String _$fetchAssetsHash() => r'e9011e41cc48ea24127626c6e439e5dcc8f97f36';
-
-/// See also [fetchAssets].
-@ProviderFor(fetchAssets)
-final fetchAssetsProvider =
-    AutoDisposeFutureProvider<List<CryptoAsset>>.internal(
-  fetchAssets,
-  name: r'fetchAssetsProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$fetchAssetsHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-typedef FetchAssetsRef = AutoDisposeFutureProviderRef<List<CryptoAsset>>;
-String _$fetchAssetHash() => r'093d5dfe90d5c3e8d07e535307ee9c9af5974688';
+typedef FetchIdSymbolsMapRef = FutureProviderRef<Map<String, CryptoIdentifier>>;
+String _$searchAssetsHash() => r'ae37e6ebcf1f2c88049adedf2d8411239168de1d';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -60,6 +80,121 @@ class _SystemHash {
   }
 }
 
+typedef SearchAssetsRef = AutoDisposeFutureProviderRef<List<CryptoAsset>>;
+
+/// See also [searchAssets].
+@ProviderFor(searchAssets)
+const searchAssetsProvider = SearchAssetsFamily();
+
+/// See also [searchAssets].
+class SearchAssetsFamily extends Family<AsyncValue<List<CryptoAsset>>> {
+  /// See also [searchAssets].
+  const SearchAssetsFamily();
+
+  /// See also [searchAssets].
+  SearchAssetsProvider call({
+    String? search,
+    int limit = 100,
+    int offset = 0,
+  }) {
+    return SearchAssetsProvider(
+      search: search,
+      limit: limit,
+      offset: offset,
+    );
+  }
+
+  @override
+  SearchAssetsProvider getProviderOverride(
+    covariant SearchAssetsProvider provider,
+  ) {
+    return call(
+      search: provider.search,
+      limit: provider.limit,
+      offset: provider.offset,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'searchAssetsProvider';
+}
+
+/// See also [searchAssets].
+class SearchAssetsProvider
+    extends AutoDisposeFutureProvider<List<CryptoAsset>> {
+  /// See also [searchAssets].
+  SearchAssetsProvider({
+    this.search,
+    this.limit = 100,
+    this.offset = 0,
+  }) : super.internal(
+          (ref) => searchAssets(
+            ref,
+            search: search,
+            limit: limit,
+            offset: offset,
+          ),
+          from: searchAssetsProvider,
+          name: r'searchAssetsProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$searchAssetsHash,
+          dependencies: SearchAssetsFamily._dependencies,
+          allTransitiveDependencies:
+              SearchAssetsFamily._allTransitiveDependencies,
+        );
+
+  final String? search;
+  final int limit;
+  final int offset;
+
+  @override
+  bool operator ==(Object other) {
+    return other is SearchAssetsProvider &&
+        other.search == search &&
+        other.limit == limit &&
+        other.offset == offset;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, search.hashCode);
+    hash = _SystemHash.combine(hash, limit.hashCode);
+    hash = _SystemHash.combine(hash, offset.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+String _$fetchAssetsHash() => r'967b004301af96e9381d6f5902913a4c4da8130f';
+
+/// See also [fetchAssets].
+@ProviderFor(fetchAssets)
+final fetchAssetsProvider =
+    AutoDisposeFutureProvider<List<CryptoAsset>>.internal(
+  fetchAssets,
+  name: r'fetchAssetsProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$fetchAssetsHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef FetchAssetsRef = AutoDisposeFutureProviderRef<List<CryptoAsset>>;
+String _$fetchAssetHash() => r'62a965b8fd8e7ff937fc74206b847239bed446c3';
 typedef FetchAssetRef = AutoDisposeFutureProviderRef<CryptoAsset>;
 
 /// See also [fetchAsset].
@@ -251,7 +386,7 @@ final fetchExchangesSocketProvider = FutureProvider<Set<String>>.internal(
 );
 
 typedef FetchExchangesSocketRef = FutureProviderRef<Set<String>>;
-String _$cryptoTradeHash() => r'b82e8666d34d25444ece19e1e1dc60119aa3d497';
+String _$cryptoTradeHash() => r'df80b423f37b0136a0dd486cfa76889c11a5eeb3';
 typedef CryptoTradeRef = AutoDisposeStreamProviderRef<List<CryptoTrade>>;
 
 /// See also [cryptoTrade].
@@ -423,7 +558,7 @@ class FetchLogoProvider extends AutoDisposeFutureProvider<String?> {
   }
 }
 
-String _$fetchBinancePairsHash() => r'ff766a154ac521fb36e1a45dc8c25f080381d6ef';
+String _$fetchBinancePairsHash() => r'06127e0d23b44377a8f2b7cf6f623aea96d0562e';
 
 /// See also [fetchBinancePairs].
 @ProviderFor(fetchBinancePairs)

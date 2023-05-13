@@ -7,6 +7,7 @@ import '../domain/crypto_asset.dart';
 import '../domain/crypto_asset_history.dart';
 import '../domain/crypto_binance_pair.dart';
 import '../domain/crypto_candle.dart';
+import '../domain/crypto_identifier.dart';
 import '../domain/crypto_order.dart';
 import '../domain/crypto_symbol.dart';
 import '../domain/crypto_ticker.dart';
@@ -43,40 +44,34 @@ class CryptoRepository {
   static const String ratesUrl = '/rates';
   static const String coinCapTradeWs = 'wss://ws.coincap.io/trades';
 
-  TaskEither<DataException, List<CryptoAsset>> fetchAssets({int limit = 100, int offset = 0}) {
-    return _dio.get(coinCapBaseUrl + assetsUrl,
-        queryParameters: {'limit': limit, 'offset': offset}).wrapCoinCap<List<CryptoAsset>, List>(
+  TaskEither<DataException, List<CryptoAsset>> fetchAssets(
+      {Set<String>? ids, int limit = 100, int offset = 0}) {
+    return _dio.get(coinCapBaseUrl + assetsUrl, queryParameters: {
+      if (ids != null) 'ids': ids.join(','),
+      'limit': limit,
+      'offset': offset,
+    }).wrapCoinCap<List<CryptoAsset>, List>(
       (assets) => assets.map((json) => CryptoAsset.fromJson(json)).toList(),
     );
   }
 
-  TaskEither<DataException, Map<String, CryptoSymbol>> fetchIdSymbolsMap(
+  TaskEither<DataException, List<CryptoIdentifier>> fetchCryptoIdentifiers(
       {int limit = 100, int offset = 0}) {
     return _dio.get(coinCapBaseUrl + assetsUrl, queryParameters: {
       'limit': limit,
       'offset': offset
-    }).wrapCoinCap<Map<String, CryptoSymbol>, List>(
-      (assets) => Map.fromEntries(
-        assets.map(
-          (json) {
-            final symbol = CryptoSymbol.fromJson(json);
-            return MapEntry(symbol.id, symbol);
-          },
-        ),
-      ),
+    }).wrapCoinCap<List<CryptoIdentifier>, List>(
+      (assets) => assets.map((json) => CryptoIdentifier.fromJson(json)).toList(),
     );
   }
 
-  TaskEither<DataException, Map<String, CryptoSymbol>> fetchIdRatesMap() {
-    return _dio.get(coinCapBaseUrl + ratesUrl).wrapCoinCap<Map<String, CryptoSymbol>, List>(
-          (assets) => Map.fromEntries(
-            assets.map(
-              (json) {
-                final symbol = CryptoSymbol.fromJson(json);
-                return MapEntry(symbol.id, symbol);
-              },
-            ),
-          ),
+  TaskEither<DataException, List<CryptoIdentifier>> fetchCryptoRateIdentifiers() {
+    return _dio.get(coinCapBaseUrl + ratesUrl).wrapCoinCap<List<CryptoIdentifier>, List>(
+          (assets) => assets
+              .map(
+                (json) => CryptoIdentifier.fromJson(json),
+              )
+              .toList(),
         );
   }
 

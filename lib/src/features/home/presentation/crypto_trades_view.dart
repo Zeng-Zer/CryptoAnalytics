@@ -18,12 +18,16 @@ class BullBearBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final buyTrades = trades.where((trade) => trade.direction == Direction.buy).length;
-    final sellTrades = trades.where((trade) => trade.direction == Direction.sell).length;
-    final totalTrades = buyTrades + sellTrades;
-    final buyPercentage = buyTrades / totalTrades;
-    final sellPercentage = sellTrades / totalTrades;
-    const animationDuration = Duration(milliseconds: 500);
+    final buyTrades = trades
+        .where((trade) => trade.direction == Direction.buy)
+        .fold<double>(0, (previousValue, trade) => previousValue + trade.volume);
+    final sellTrades = trades
+        .where((trade) => trade.direction == Direction.sell)
+        .fold<double>(0, (previousValue, trade) => previousValue + trade.volume);
+    final totalVolume = buyTrades + sellTrades;
+    final buyPercentage = buyTrades / totalVolume;
+    final sellPercentage = sellTrades / totalVolume;
+    const animationDuration = Duration(milliseconds: 300);
     return Stack(
       children: [
         Align(
