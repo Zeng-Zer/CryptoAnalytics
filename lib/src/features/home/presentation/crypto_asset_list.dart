@@ -1,5 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../components/padded_container.dart';
@@ -10,14 +12,19 @@ import '../../../theme.dart';
 import '../../../utils/extensions.dart';
 import '../domain/crypto_asset.dart';
 import 'crypto_price_change.dart';
+import 'providers/crypto_asset_provider.dart';
+
+final previousSearchProvider = StateProvider.autoDispose<String>((ref) {
+  return '';
+});
 
 class CryptoAssetList extends HookConsumerWidget {
   const CryptoAssetList({
     Key? key,
-    required this.assets,
+    required this.search,
   }) : super(key: key);
 
-  final List<CryptoAsset> assets;
+  final String search;
   final nameWidth = 170.0;
   final priceWidth = 110.0;
   final priceChangeWidth = 110.0;
@@ -108,36 +115,81 @@ class CryptoAssetList extends HookConsumerWidget {
     );
   }
 
-  Widget buildTable(List<CryptoAsset> assets) {
+  Widget buildListView(WidgetRef ref) {
+    final scrollController = useScrollController();
+    final lastDirection = useState(ScrollDirection.idle);
+    // Set idle to prevent loading indicator from showing on all indexes if we just scrolled up
+    ref.listen(previousSearchProvider, (previous, next) {
+      if (previous != next) {
+        Future(() => lastDirection.value = ScrollDirection.idle);
+      }
+    });
+    // Set scroll direction
+    scrollController.addListener(() {
+      final direction = scrollController.position.userScrollDirection;
+      print(direction);
+      lastDirection.value = direction;
+    });
+
     final contentStyle = textTheme().titleSmall;
-    return SizedBox(
-      width: nameWidth + priceWidth + priceChangeWidth + volumeWidth + marketCapWidth,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          buildHeader(),
-          const Divider(),
-          Expanded(
-            child: ListView.separated(
-              shrinkWrap: true,
-              separatorBuilder: (context, index) => const Divider(),
-              scrollDirection: Axis.vertical,
-              itemCount: assets.length,
-              itemBuilder: (context, index) => buildRow(context, assets[index], contentStyle),
-            ),
-          ),
-        ],
-      ),
+    const limit = 50;
+    return ListView.builder(
+      controller: scrollController,
+      itemBuilder: (context, index) {
+        final page = index ~/ limit;
+        final pageIndex = index % limit;
+        final assets =
+            ref.watch(searchAssetsProvider(search: search, limit: limit, offset: page * limit));
+        return assets.when(
+          error: (error, stackTrace) => Center(child: Text(error.toString())),
+          loading: () {
+            switch ((lastDirection.value, pageIndex)) {
+              case (!= ScrollDirection.forward, == 0) || (ScrollDirection.forward, _):
+                return const Center(child: CircularProgressIndicator());
+              case _:
+                return null;
+            }
+          },
+          data: (assets) {
+            if (pageIndex >= assets.length) return null;
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (index > 0) const Divider(),
+                buildRow(context, assets[pageIndex], contentStyle),
+              ],
+            );
+          },
+        );
+        // return buildRow(context, assets[index], contentStyle);
+      },
     );
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    Future(() {
+      if (ref.watch(previousSearchProvider) != search) {
+        ref.read(previousSearchProvider.notifier).state = search;
+      }
+    });
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: PaddedContainer(
         margin: sideMargin,
-        child: buildTable(assets),
+        child: SizedBox(
+          width: nameWidth + priceWidth + priceChangeWidth + volumeWidth + marketCapWidth,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              buildHeader(),
+              const Divider(),
+              Expanded(
+                child: buildListView(ref),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

@@ -9,14 +9,20 @@ import '../domain/crypto_binance_pair.dart';
 import '../domain/crypto_candle.dart';
 import '../domain/crypto_identifier.dart';
 import '../domain/crypto_order.dart';
-import '../domain/crypto_symbol.dart';
 import '../domain/crypto_ticker.dart';
 
 // Wrap dio response, deserialize json and return a TaskEither
 extension CoinCapApi on Future<Response> {
   TaskEither<DataException, R> wrapCoinCap<R, T>(R Function(T) parseJson) => TaskEither.tryCatch(
         () => then((value) => parseJson(value.data['data'])),
-        (err, stackTrace) => DataException.fromDioError(err as DioError, stackTrace),
+        (err, stackTrace) {
+          switch (err.runtimeType) {
+            case DioError:
+              return DataException.fromDioError(err as DioError, stackTrace);
+            default:
+              return DataException(message: err.toString(), stackTrace: stackTrace);
+          }
+        },
       );
 }
 
@@ -45,7 +51,8 @@ class CryptoRepository {
   static const String coinCapTradeWs = 'wss://ws.coincap.io/trades';
 
   TaskEither<DataException, List<CryptoAsset>> fetchAssets(
-      {Set<String>? ids, int limit = 100, int offset = 0}) {
+      {Set<String>? ids, required int limit, required int offset}) {
+    if (ids != null && ids.isEmpty) return TaskEither.right([]);
     return _dio.get(coinCapBaseUrl + assetsUrl, queryParameters: {
       if (ids != null) 'ids': ids.join(','),
       'limit': limit,

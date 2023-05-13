@@ -5,37 +5,13 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../components/z_search_bar.dart';
 import '../../../constants.dart';
-import '../domain/crypto_asset.dart';
 import 'crypto_asset_list.dart';
-import 'providers/crypto_asset_provider.dart';
 
 @RoutePage()
 class HomeScreen extends HookConsumerWidget {
   const HomeScreen({
     Key? key,
   }) : super(key: key);
-
-  // filter name and symbol based on search
-  List<CryptoAsset> filterCryptoAssetList(List<CryptoAsset> assets, String search) {
-    return assets
-        .where((asset) =>
-            asset.name.toLowerCase().startsWith(search.toLowerCase()) ||
-            asset.symbol.toLowerCase().startsWith(search.toLowerCase()))
-        .toList();
-  }
-
-  Widget buildCryptoAssetList(WidgetRef ref, {String? search}) {
-    return ref.watch(fetchAssetsProvider).when(
-          loading: () => const Center(child: CircularProgressIndicator()),
-          error: (err, stack) => Center(child: Text(err.toString())),
-          data: (data) {
-            if (search != null) {
-              data = filterCryptoAssetList(data, search);
-            }
-            return CryptoAssetList(assets: data);
-          },
-        );
-  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -59,7 +35,7 @@ class HomeScreen extends HookConsumerWidget {
                 ),
               ),
               const SizedBox(height: 8),
-              Expanded(child: buildCryptoAssetList(ref, search: controller.text)),
+              Expanded(child: CryptoAssetList(search: controller.text)),
             ],
           ),
         ),

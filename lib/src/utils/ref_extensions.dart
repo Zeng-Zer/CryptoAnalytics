@@ -13,3 +13,16 @@ extension TimedFetchRef on Ref {
     });
   }
 }
+
+extension AutoDisposeExtension on AutoDisposeRef {
+  void cacheFor(Duration duration) {
+    final keepAliveLink = keepAlive();
+    final timer = Timer(duration, () {
+      keepAliveLink.close();
+    });
+
+    onDispose(() {
+      timer.cancel();
+    });
+  }
+}

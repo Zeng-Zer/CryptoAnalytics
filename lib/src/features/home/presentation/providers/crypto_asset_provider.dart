@@ -65,9 +65,9 @@ Future<List<CryptoAsset>> searchAssets(
   int limit = 100,
   int offset = 0,
 }) async {
+  // print('searchAssets $search');
   searchId() async {
     if (search == null || search.isEmpty) return null;
-
     return (await ref.watch(fetchCryptoIdentifiersProvider.future))
         .where((identifier) =>
             identifier.symbol.toLowerCase().startsWith(search.toLowerCase()) ||
@@ -76,31 +76,24 @@ Future<List<CryptoAsset>> searchAssets(
         .toSet();
   }
 
-  return ref
+  final result = await ref
       .read(cryptoRepositoryProvider)
       .fetchAssets(ids: await searchId(), limit: limit, offset: offset)
       .flatMap((assets) => _addAssetLogos(ref, assets))
       .unwrap();
-}
 
-@riverpod
-Future<List<CryptoAsset>> fetchAssets(FetchAssetsRef ref) async {
-  print('fetchAssets');
+  const duration = Duration(seconds: 10);
+  ref.cacheFor(duration);
+  ref.refreshAfter(duration);
 
-  ref.refreshAfter(const Duration(seconds: 10));
-
-  return ref
-      .read(cryptoRepositoryProvider)
-      .fetchAssets()
-      .flatMap((assets) => _addAssetLogos(ref, assets))
-      .unwrap();
+  return result;
 }
 
 @riverpod
 Future<CryptoAsset> fetchAsset(FetchAssetRef ref, String assetId) async {
   print('fetch assets $assetId');
   final asset = await ref.read(cryptoRepositoryProvider).fetchAsset(assetId).unwrap();
-  ref.refreshAfter(const Duration(seconds: 5));
+  ref.refreshAfter(const Duration(seconds: 10));
   return asset;
 }
 
@@ -194,7 +187,6 @@ Future<List<CryptoBinancePair>> fetchBinancePairsByBaseSymbol(
         .unwrap()
         .then((price) => pair.copyWith(priceQuote: price))),
   );
-  ref.refreshAfter(const Duration(seconds: 2));
   return updatedPairs;
 }
 
@@ -234,7 +226,7 @@ class CryptoPairSelection extends _$CryptoPairSelection {
   CryptoBinancePair? build(String symbol) {
     return ref
         .watch(fetchBinancePairsByBaseSymbolProvider(symbol))
-        .whenOrNull(data: (pairs) => pairs.first);
+        .whenOrNull(data: (pairs) => pairs.firstOrNull);
   }
 
   void select(CryptoBinancePair pair) {

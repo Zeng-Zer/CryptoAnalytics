@@ -23,6 +23,7 @@ String cryptoDecimalFormat(num? value) {
   if (value == 0) return value.toStringAsFixed(4);
 
   final firstDigitPosition = log(value) / ln10;
+  if (firstDigitPosition.isInfinite) return value.toStringAsFixed(2);
   return value.toStringAsFixed(4 - firstDigitPosition.round());
 }
 
@@ -34,6 +35,7 @@ NumberFormat cryptoCurrency(num? value) {
   if (value >= 1) return currencyWithDigit(3);
 
   final firstDigitPosition = log(value) / ln10;
+  if (firstDigitPosition.isInfinite) return currencyWithDigit(2);
   return currencyWithDigit(4 - firstDigitPosition.round());
 }
 

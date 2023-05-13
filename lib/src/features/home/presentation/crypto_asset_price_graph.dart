@@ -70,9 +70,10 @@ class _CryptoAssetChartState extends ConsumerState<CryptoAssetPriceChart>
     ref.listen(fetchAssetHistoryProvider(assetId: widget.assetId, refresh: true), (previous, next) {
       if (next.hasValue &&
           next.value != null &&
-          next.value!.first.time != history.first.time &&
-          next.value!.last.time != history.last.time &&
-          next.value!.length == history.length) {
+          next.value!.firstOrNull?.time != history.firstOrNull?.time &&
+          next.value!.lastOrNull?.time != history.lastOrNull?.time &&
+          next.value!.length == history.length &&
+          history.isNotEmpty) {
         final newHistory = next.value!;
         updateChartDataSource(newHistory);
       }
