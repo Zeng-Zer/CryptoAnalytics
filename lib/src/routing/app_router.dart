@@ -4,9 +4,9 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../features/authentication/presentation/sign_in_wrapper_screen.dart';
 import '../features/charts/charts_screen.dart';
-import '../features/home/domain/crypto_asset.dart';
-import '../features/home/presentation/crypto_screen.dart';
-import '../features/home/presentation/home_screen.dart';
+import '../features/crypto_info/presentation/crypto_screen.dart';
+import '../features/crypto_list/domain/crypto_asset.dart';
+import '../features/crypto_list/presentation/home_screen.dart';
 import '../features/profile/profile_screen.dart';
 import 'bottom_app_bar_holder_screen.dart';
 

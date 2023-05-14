@@ -6,7 +6,7 @@ import 'package:intl/intl.dart';
 import '../../../theme.dart';
 import '../../../utils/extensions.dart';
 import '../domain/crypto_trade.dart';
-import 'providers/crypto_asset_provider.dart';
+import '../providers/crypto_info_provider.dart';
 
 class BullBearBar extends StatelessWidget {
   const BullBearBar({

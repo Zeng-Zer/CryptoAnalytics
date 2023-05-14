@@ -6,8 +6,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../components/text_divider.dart';
 import '../../../components/z_text_field.dart';
 import '../../../theme.dart';
+import '../providers/firebase_auth_controller.dart';
 import '../utils/validators.dart';
-import 'firebase_auth_controller.dart';
 import 'sign_in_wrapper_screen.dart';
 
 class SignForm extends HookConsumerWidget {

@@ -5,8 +5,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../theme.dart';
 import '../../../utils/extensions.dart';
 import '../domain/crypto_binance_pair.dart';
+import '../providers/crypto_info_provider.dart';
 import 'crypto_exchange_pair.dart';
-import 'providers/crypto_asset_provider.dart';
 
 class CryptoPairBox extends HookConsumerWidget {
   const CryptoPairBox({

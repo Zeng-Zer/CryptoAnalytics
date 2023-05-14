@@ -4,7 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../theme.dart';
 import '../../../utils/extensions.dart';
 import '../domain/crypto_order.dart';
-import 'providers/crypto_asset_provider.dart';
+import '../providers/crypto_info_provider.dart';
 
 class CryptoOrderBook extends HookConsumerWidget {
   const CryptoOrderBook({

@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'crypto_asset_provider.dart';
+part of 'crypto_info_provider.dart';
 
 // **************************************************************************
 // RiverpodGenerator

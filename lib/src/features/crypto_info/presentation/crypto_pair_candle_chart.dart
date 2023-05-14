@@ -8,7 +8,7 @@ import '../../../theme.dart';
 import '../../../utils/extensions.dart';
 import '../domain/crypto_binance_pair.dart';
 import '../domain/crypto_candle.dart';
-import 'providers/crypto_asset_provider.dart';
+import '../providers/crypto_info_provider.dart';
 
 class CryptoPairCandleChart extends HookConsumerWidget {
   const CryptoPairCandleChart({

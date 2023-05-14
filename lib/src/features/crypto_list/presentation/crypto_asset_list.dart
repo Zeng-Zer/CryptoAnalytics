@@ -11,8 +11,8 @@ import '../../../routing/app_router.dart';
 import '../../../theme.dart';
 import '../../../utils/extensions.dart';
 import '../domain/crypto_asset.dart';
+import '../providers/crypto_list_provider.dart';
 import 'crypto_price_change.dart';
-import 'providers/crypto_asset_provider.dart';
 
 // final previousSearchProvider = StateProvider.autoDispose<String>((ref) {
 //   return '';

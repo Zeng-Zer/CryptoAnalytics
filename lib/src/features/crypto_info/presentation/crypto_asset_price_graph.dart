@@ -5,9 +5,9 @@ import 'package:syncfusion_flutter_charts/charts.dart';
 
 import '../../../theme.dart';
 import '../../../utils/extensions.dart';
+import '../../crypto_list/presentation/crypto_price_change.dart';
 import '../domain/crypto_asset_history.dart';
-import 'crypto_price_change.dart';
-import 'providers/crypto_asset_provider.dart';
+import '../providers/crypto_info_provider.dart';
 
 class CryptoAssetPriceChart extends ConsumerStatefulWidget {
   const CryptoAssetPriceChart({

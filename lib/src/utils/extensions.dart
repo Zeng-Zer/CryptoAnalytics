@@ -1,6 +1,6 @@
 import 'package:fpdart/fpdart.dart';
 
-import '../constants/data_exception.dart';
+import '../data_exception.dart';
 import 'number_formatter.dart';
 
 extension Intersperse<T> on Iterable<T> {

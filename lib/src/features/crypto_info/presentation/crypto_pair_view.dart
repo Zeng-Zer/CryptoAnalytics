@@ -5,13 +5,13 @@ import '../../../components/padded_container.dart';
 import '../../../constants.dart';
 import '../../../theme.dart';
 import '../../../utils/extensions.dart';
+import '../../crypto_list/presentation/crypto_price_change.dart';
 import '../domain/crypto_binance_pair.dart';
 import '../domain/crypto_ticker.dart';
+import '../providers/crypto_info_provider.dart';
 import 'crypto_order_book.dart';
 import 'crypto_pair_candle_chart.dart';
 import 'crypto_pair_list.dart';
-import 'crypto_price_change.dart';
-import 'providers/crypto_asset_provider.dart';
 
 class CryptoPairInfo extends ConsumerWidget {
   const CryptoPairInfo({

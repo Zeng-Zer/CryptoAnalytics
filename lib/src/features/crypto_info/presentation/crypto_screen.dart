@@ -4,10 +4,10 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../components/svg_logo_string.dart';
-import '../domain/crypto_asset.dart';
+import '../../crypto_list/domain/crypto_asset.dart';
+import '../providers/crypto_info_provider.dart';
 import 'crypto_info_view.dart';
 import 'crypto_pair_view.dart';
-import 'providers/crypto_asset_provider.dart';
 
 enum PriceCandleState {
   price,

@@ -4,7 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../components/padded_container.dart';
 import '../../../constants.dart';
 import '../../../theme.dart';
-import '../domain/crypto_asset.dart';
+import '../../crypto_list/domain/crypto_asset.dart';
 import 'crypto_asset_price_graph.dart';
 import 'crypto_trades_view.dart';
 

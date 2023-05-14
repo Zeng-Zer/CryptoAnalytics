@@ -2,14 +2,14 @@ import 'package:dio/dio.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../../../constants/data_exception.dart';
-import '../domain/crypto_asset.dart';
-import '../domain/crypto_asset_history.dart';
-import '../domain/crypto_binance_pair.dart';
-import '../domain/crypto_candle.dart';
-import '../domain/crypto_identifier.dart';
-import '../domain/crypto_order.dart';
-import '../domain/crypto_ticker.dart';
+import '../data_exception.dart';
+import '../features/crypto_info/domain/crypto_asset_history.dart';
+import '../features/crypto_info/domain/crypto_binance_pair.dart';
+import '../features/crypto_info/domain/crypto_candle.dart';
+import '../features/crypto_info/domain/crypto_order.dart';
+import '../features/crypto_info/domain/crypto_ticker.dart';
+import '../features/crypto_list/domain/crypto_asset.dart';
+import '../features/crypto_list/domain/crypto_identifier.dart';
 
 // Wrap dio response, deserialize json and return a TaskEither
 extension CoinCapApi on Future<Response> {

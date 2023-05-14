@@ -8,21 +8,21 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
-import '../../../../constants/data_exception.dart';
-import '../../../../utils/extensions.dart';
-import '../../../../utils/ref_extensions.dart';
-import '../../data/crypto_repository.dart';
-import '../../domain/crypto_asset.dart';
-import '../../domain/crypto_asset_history.dart';
-import '../../domain/crypto_binance_pair.dart';
-import '../../domain/crypto_candle.dart';
-import '../../domain/crypto_identifier.dart';
-import '../../domain/crypto_order.dart';
-import '../../domain/crypto_ticker.dart';
-import '../../domain/crypto_trade.dart';
-import '../crypto_screen.dart';
+import '../../../data_exception.dart';
+import '../../../repositories/crypto_repository.dart';
+import '../../../utils/extensions.dart';
+import '../../../utils/ref_extensions.dart';
+import '../../crypto_list/domain/crypto_asset.dart';
+import '../../crypto_list/domain/crypto_identifier.dart';
+import '../domain/crypto_asset_history.dart';
+import '../domain/crypto_binance_pair.dart';
+import '../domain/crypto_candle.dart';
+import '../domain/crypto_order.dart';
+import '../domain/crypto_ticker.dart';
+import '../domain/crypto_trade.dart';
+import '../presentation/crypto_screen.dart';
 
-part 'crypto_asset_provider.g.dart';
+part 'crypto_info_provider.g.dart';
 
 // COINCAP API
 
