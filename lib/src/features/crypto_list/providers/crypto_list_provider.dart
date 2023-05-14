@@ -1,12 +1,9 @@
 // ignore_for_file: avoid_manual_providers_as_generated_provider_dependency
 import 'dart:async';
-import 'dart:convert';
 
-import 'package:async/async.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:web_socket_channel/web_socket_channel.dart';
 
 import '../../../data_exception.dart';
 import '../../../repositories/crypto_repository.dart';
@@ -36,19 +33,6 @@ Future<List<CryptoIdentifier>> fetchCryptoIdentifiers(FetchCryptoIdentifiersRef 
 
   print('fetchCryptoIdentifiers done ${result.length}');
   return result;
-}
-
-@Riverpod(keepAlive: true)
-Future<List<CryptoIdentifier>> fetchCryptoRateIdentifiers(FetchCryptoRateIdentifiersRef ref) async {
-  return ref.read(cryptoRepositoryProvider).fetchCryptoRateIdentifiers().unwrap();
-}
-
-@Riverpod(keepAlive: true)
-Future<Map<String, CryptoIdentifier>> fetchIdSymbolsMap(FetchIdSymbolsMapRef ref) async {
-  return {
-    ...{for (var e in await ref.watch(fetchCryptoIdentifiersProvider.future)) e.id: e},
-    ...{for (var e in await ref.watch(fetchCryptoRateIdentifiersProvider.future)) e.id: e},
-  };
 }
 
 @riverpod

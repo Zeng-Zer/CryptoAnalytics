@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../data/firebase_auth_repository.dart';
+import '../../../repositories/firebase_auth_repository.dart';
 import '../presentation/sign_in_wrapper_screen.dart';
 
 part 'firebase_auth_controller.g.dart';

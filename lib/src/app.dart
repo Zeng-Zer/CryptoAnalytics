@@ -1,9 +1,10 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import 'features/authentication/data/firebase_auth_repository.dart';
 import 'features/crypto_info/providers/crypto_info_provider.dart';
+import 'repositories/firebase_auth_repository.dart';
 import 'routing/app_router.dart';
 import 'theme.dart';
 
@@ -30,7 +31,8 @@ class MyApp extends ConsumerWidget {
         navigatorObservers: () => [
           FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance),
         ],
-        initialRoutes: [if (authRepo.isSignedIn) const HomeRoute() else const SignInWrapperRoute()],
+        deepLinkBuilder: (_) =>
+            DeepLink([if (authRepo.isSignedIn) const HomeRoute() else const SignInWrapperRoute()]),
       ),
     );
   }

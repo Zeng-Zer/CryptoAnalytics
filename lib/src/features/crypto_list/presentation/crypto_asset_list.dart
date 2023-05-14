@@ -22,9 +22,12 @@ class CryptoAssetList extends HookConsumerWidget {
   const CryptoAssetList({
     Key? key,
     required this.search,
+    required this.onTap,
   }) : super(key: key);
 
   final String search;
+  final void Function() onTap;
+
   final nameWidth = 170.0;
   final priceWidth = 110.0;
   final priceChangeWidth = 110.0;
@@ -55,7 +58,10 @@ class CryptoAssetList extends HookConsumerWidget {
     final nameRow = Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: () => context.pushRoute(CryptoRoute(asset: asset)),
+        onTap: () {
+          onTap();
+          context.pushRoute(CryptoRoute(asset: asset));
+        },
         borderRadius: BorderRadius.circular(10),
         child: Row(
           children: [
@@ -116,22 +122,13 @@ class CryptoAssetList extends HookConsumerWidget {
   }
 
   Widget buildListView(WidgetRef ref) {
-    // final previousSearch = usePrevious(search);
     final scrollController = useScrollController();
     final lastDirection = useState(ScrollDirection.idle);
     useValueChanged<String, void>(search, (previous, _) {
-      print('previous: $previous, search: $search');
       if (previous != search) {
         Future(() => lastDirection.value = ScrollDirection.idle);
       }
     });
-
-    // Set idle to prevent multiple loading indicators if we just scrolled up
-    // ref.listen(previousSearchProvider, (previous, next) {
-    //   if (previous != next) {
-    //     Future(() => lastDirection.value = ScrollDirection.idle);
-    //   }
-    // });
     // Set scroll direction
     scrollController.addListener(() {
       final direction = scrollController.position.userScrollDirection;

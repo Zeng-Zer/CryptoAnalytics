@@ -3,8 +3,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../components/svg_logo_string.dart';
 import '../../../theme.dart';
+import '../../crypto_list/providers/crypto_list_provider.dart';
 import '../domain/crypto_binance_pair.dart';
-import '../providers/crypto_info_provider.dart';
 
 class CryptoExchangePair extends ConsumerWidget {
   const CryptoExchangePair({

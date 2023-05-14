@@ -2,8 +2,8 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../repositories/firebase_auth_repository.dart';
 import '../../routing/app_router.dart';
-import '../authentication/data/firebase_auth_repository.dart';
 
 @RoutePage()
 class ProfileScreen extends ConsumerStatefulWidget {

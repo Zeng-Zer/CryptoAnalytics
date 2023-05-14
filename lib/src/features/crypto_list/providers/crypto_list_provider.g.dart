@@ -23,40 +23,6 @@ final fetchCryptoIdentifiersProvider =
 );
 
 typedef FetchCryptoIdentifiersRef = FutureProviderRef<List<CryptoIdentifier>>;
-String _$fetchCryptoRateIdentifiersHash() =>
-    r'e5827b8f15ee3eb8733294a3187e071ccc00d0a9';
-
-/// See also [fetchCryptoRateIdentifiers].
-@ProviderFor(fetchCryptoRateIdentifiers)
-final fetchCryptoRateIdentifiersProvider =
-    FutureProvider<List<CryptoIdentifier>>.internal(
-  fetchCryptoRateIdentifiers,
-  name: r'fetchCryptoRateIdentifiersProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$fetchCryptoRateIdentifiersHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-typedef FetchCryptoRateIdentifiersRef
-    = FutureProviderRef<List<CryptoIdentifier>>;
-String _$fetchIdSymbolsMapHash() => r'ff0b674bf853bddfda0098af1d65478fb583b06e';
-
-/// See also [fetchIdSymbolsMap].
-@ProviderFor(fetchIdSymbolsMap)
-final fetchIdSymbolsMapProvider =
-    FutureProvider<Map<String, CryptoIdentifier>>.internal(
-  fetchIdSymbolsMap,
-  name: r'fetchIdSymbolsMapProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$fetchIdSymbolsMapHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-typedef FetchIdSymbolsMapRef = FutureProviderRef<Map<String, CryptoIdentifier>>;
 String _$searchAssetsHash() => r'6e6bef0846f71b07f1ae9fd79853ce4679154e5b';
 
 /// Copied from Dart SDK

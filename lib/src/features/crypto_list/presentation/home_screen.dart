@@ -35,7 +35,12 @@ class HomeScreen extends HookConsumerWidget {
                 ),
               ),
               const SizedBox(height: 8),
-              Expanded(child: CryptoAssetList(search: controller.text)),
+              Expanded(
+                child: CryptoAssetList(
+                  search: controller.text,
+                  onTap: () => focusNode.unfocus(),
+                ),
+              ),
             ],
           ),
         ),
