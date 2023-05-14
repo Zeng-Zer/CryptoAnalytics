@@ -34,12 +34,15 @@ class CryptoScreen extends HookConsumerWidget {
       children: [
         SvgLogoString(logo: asset.logoSvg, size: 24),
         const SizedBox(width: 8),
-        Text(asset.name),
+        Flexible(child: Text(asset.name, overflow: TextOverflow.ellipsis)),
       ],
     );
 
+    const visualDensity = VisualDensity(horizontal: VisualDensity.minimumDensity, vertical: -2.0);
     final actions = [
       IconButton(
+        visualDensity: visualDensity,
+        iconSize: 24,
         onPressed: selectedPair == null
             ? null
             : () {
@@ -51,7 +54,14 @@ class CryptoScreen extends HookConsumerWidget {
               ? Icons.candlestick_chart_outlined
               : Icons.attach_money,
         ),
-      )
+      ),
+      IconButton(
+        visualDensity: visualDensity,
+        iconSize: 20,
+        onPressed: () {},
+        icon: const Icon(Icons.favorite_border),
+      ),
+      const SizedBox(width: 8),
     ];
 
     final pages = [

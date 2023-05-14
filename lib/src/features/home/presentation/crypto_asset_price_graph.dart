@@ -118,7 +118,6 @@ class _CryptoAssetChartState extends ConsumerState<CryptoAssetPriceChart>
         labelAlignment: LabelAlignment.end,
         tickPosition: TickPosition.inside,
         labelPosition: ChartDataLabelPosition.inside,
-        // isVisible: false,
         rangePadding: ChartRangePadding.round,
         anchorRangeToVisiblePoints: true,
         enableAutoIntervalOnZooming: true,

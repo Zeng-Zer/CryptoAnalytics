@@ -14,10 +14,10 @@ import '../domain/crypto_asset.dart';
 import 'crypto_price_change.dart';
 import 'providers/crypto_asset_provider.dart';
 
-final previousSearchProvider = StateProvider.autoDispose<String>((ref) {
-  return '';
-});
-
+// final previousSearchProvider = StateProvider.autoDispose<String>((ref) {
+//   return '';
+// });
+//
 class CryptoAssetList extends HookConsumerWidget {
   const CryptoAssetList({
     Key? key,
@@ -116,18 +116,25 @@ class CryptoAssetList extends HookConsumerWidget {
   }
 
   Widget buildListView(WidgetRef ref) {
+    // final previousSearch = usePrevious(search);
     final scrollController = useScrollController();
     final lastDirection = useState(ScrollDirection.idle);
-    // Set idle to prevent loading indicator from showing on all indexes if we just scrolled up
-    ref.listen(previousSearchProvider, (previous, next) {
-      if (previous != next) {
+    useValueChanged<String, void>(search, (previous, _) {
+      print('previous: $previous, search: $search');
+      if (previous != search) {
         Future(() => lastDirection.value = ScrollDirection.idle);
       }
     });
+
+    // Set idle to prevent multiple loading indicators if we just scrolled up
+    // ref.listen(previousSearchProvider, (previous, next) {
+    //   if (previous != next) {
+    //     Future(() => lastDirection.value = ScrollDirection.idle);
+    //   }
+    // });
     // Set scroll direction
     scrollController.addListener(() {
       final direction = scrollController.position.userScrollDirection;
-      print(direction);
       lastDirection.value = direction;
     });
 
@@ -168,11 +175,11 @@ class CryptoAssetList extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    Future(() {
-      if (ref.watch(previousSearchProvider) != search) {
-        ref.read(previousSearchProvider.notifier).state = search;
-      }
-    });
+    // Future(() {
+    //   if (ref.watch(previousSearchProvider) != search) {
+    //     ref.read(previousSearchProvider.notifier).state = search;
+    //   }
+    // });
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: PaddedContainer(

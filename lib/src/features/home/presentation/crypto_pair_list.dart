@@ -127,8 +127,8 @@ class CryptoPairList extends HookConsumerWidget {
       skipLoadingOnReload: true,
       error: (error, stackTrace) => Text(error.toString()),
       loading: () => const Center(child: CircularProgressIndicator()),
-      data: (pairs) => AnimatedContainer(
-        duration: CryptoPairBox.animationDuration,
+      data: (pairs) => SizedBox(
+        // duration: CryptoPairBox.animationDuration,
         width: isExpanded ? CryptoPairBox.expandedWidth : CryptoPairBox.width,
         child: Column(
           mainAxisSize: MainAxisSize.max,
