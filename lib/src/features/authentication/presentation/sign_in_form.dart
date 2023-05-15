@@ -149,10 +149,10 @@ class SignForm extends HookConsumerWidget {
             padding: const EdgeInsets.fromLTRB(32, 16, 32, 16),
             backgroundColor: theme().buttonTheme.colorScheme?.secondary,
           ),
-          child: Center(
+          child: const Center(
             child: Row(
               mainAxisSize: MainAxisSize.min,
-              children: const [
+              children: [
                 Icon(Icons.facebook),
                 SizedBox(width: 16),
                 Text('Continue with Facebook'),

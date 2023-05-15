@@ -3,49 +3,39 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'firebase_auth_repository.g.dart';
 
-class AuthRepository {
-  AuthRepository(this.auth);
+class FirebaseAuthRepository {
+  FirebaseAuthRepository(this.auth);
 
   final FirebaseAuth auth;
 
-  Stream<User?> authStateChanges() => auth.authStateChanges();
   User? get currentUser => auth.currentUser;
   bool get isSignedIn => auth.currentUser != null;
+
+  Stream<User?> authStateChanges() => auth.authStateChanges();
 
   Future<UserCredential> signInWithEmailAndPassword({
     required String email,
     required String password,
-  }) {
-    return auth.signInWithEmailAndPassword(email: email, password: password);
-  }
+  }) =>
+      auth.signInWithEmailAndPassword(email: email, password: password);
 
   Future<UserCredential> createUserWithEmailAndPassword({
     required String email,
     required String password,
-  }) {
-    return auth.createUserWithEmailAndPassword(email: email, password: password);
-  }
+  }) =>
+      auth.createUserWithEmailAndPassword(email: email, password: password);
 
-  Future<void> signInAnonymously() {
-    return auth.signInAnonymously();
-  }
+  Future<void> signInAnonymously() => auth.signInAnonymously();
 
-  Future<void> signOut() {
-    return auth.signOut();
-  }
+  Future<void> signOut() => auth.signOut();
 }
 
 @Riverpod(keepAlive: true)
-FirebaseAuth firebaseAuth(FirebaseAuthRef ref) {
-  return FirebaseAuth.instance;
-}
-
-@Riverpod(keepAlive: true)
-AuthRepository authRepository(AuthRepositoryRef ref) {
-  return AuthRepository(ref.watch(firebaseAuthProvider));
+FirebaseAuthRepository firebaseAuthRepository(FirebaseAuthRepositoryRef ref) {
+  return FirebaseAuthRepository(FirebaseAuth.instance);
 }
 
 @riverpod
-Stream<User?> authStateChanges(AuthStateChangesRef ref) {
-  return ref.watch(authRepositoryProvider).authStateChanges();
+Stream<User?> firebaseAuthStateChanges(FirebaseAuthStateChangesRef ref) {
+  return ref.watch(firebaseAuthRepositoryProvider).authStateChanges();
 }
