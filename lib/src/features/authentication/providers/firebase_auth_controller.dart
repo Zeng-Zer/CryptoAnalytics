@@ -14,7 +14,7 @@ class AuthController extends _$AuthController {
   }
 
   Future<bool> signInWithEmailAndPassword({required String email, required String password}) async {
-    final authRepo = ref.watch(authRepositoryProvider);
+    final authRepo = ref.watch(firebaseAuthRepositoryProvider);
 
     state = const AsyncLoading();
     state = await AsyncValue.guard(
@@ -29,7 +29,7 @@ class AuthController extends _$AuthController {
 
   Future<bool> createUserWithEmailAndPassword(
       {required String email, required String password}) async {
-    final authRepo = ref.watch(authRepositoryProvider);
+    final authRepo = ref.watch(firebaseAuthRepositoryProvider);
 
     state = const AsyncLoading();
     state = await AsyncValue.guard(
@@ -49,7 +49,7 @@ class AnonymousButtonController extends _$AnonymousButtonController {
   FutureOr<void> build({SignState? signState}) async {}
 
   Future<void> signInAnonymously() async {
-    final authRepo = ref.watch(authRepositoryProvider);
+    final authRepo = ref.watch(firebaseAuthRepositoryProvider);
 
     state = const AsyncLoading();
     state = await AsyncValue.guard(() => authRepo.signInAnonymously());

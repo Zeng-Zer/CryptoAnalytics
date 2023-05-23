@@ -19,7 +19,7 @@ class MyApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final appRouter = ref.watch(appRouterProvider);
-    final authRepo = ref.watch(authRepositoryProvider);
+    final authRepo = ref.watch(firebaseAuthRepositoryProvider);
     final themeData = ref.watch(themeDataProvider);
 
     initGlobalFutureProviders(ref);

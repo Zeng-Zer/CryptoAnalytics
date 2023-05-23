@@ -18,7 +18,7 @@ class ProfileScreen extends ConsumerStatefulWidget {
 class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
-    final authRepository = ref.watch(authRepositoryProvider);
+    final authRepository = ref.watch(firebaseAuthRepositoryProvider);
     final appRouter = context.router;
 
     return Scaffold(

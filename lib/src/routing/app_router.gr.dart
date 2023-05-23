@@ -15,10 +15,26 @@ abstract class _$AppRouter extends RootStackRouter {
 
   @override
   final Map<String, PageFactory> pagesMap = {
+    CryptoRoute.name: (routeData) {
+      final args = routeData.argsAs<CryptoRouteArgs>();
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: CryptoScreen(
+          key: args.key,
+          asset: args.asset,
+        ),
+      );
+    },
     ChartsRoute.name: (routeData) {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
         child: const ChartsScreen(),
+      );
+    },
+    HomeRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const HomeScreen(),
       );
     },
     ProfileRoute.name: (routeData) {
@@ -39,23 +55,44 @@ abstract class _$AppRouter extends RootStackRouter {
         child: const BottomAppBarHolderScreen(),
       );
     },
-    HomeRoute.name: (routeData) {
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: const HomeScreen(),
-      );
-    },
-    CryptoRoute.name: (routeData) {
-      final args = routeData.argsAs<CryptoRouteArgs>();
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: CryptoScreen(
-          key: args.key,
-          asset: args.asset,
-        ),
-      );
-    },
   };
+}
+
+/// generated route for
+/// [CryptoScreen]
+class CryptoRoute extends PageRouteInfo<CryptoRouteArgs> {
+  CryptoRoute({
+    Key? key,
+    required CryptoAsset asset,
+    List<PageRouteInfo>? children,
+  }) : super(
+          CryptoRoute.name,
+          args: CryptoRouteArgs(
+            key: key,
+            asset: asset,
+          ),
+          initialChildren: children,
+        );
+
+  static const String name = 'CryptoRoute';
+
+  static const PageInfo<CryptoRouteArgs> page = PageInfo<CryptoRouteArgs>(name);
+}
+
+class CryptoRouteArgs {
+  const CryptoRouteArgs({
+    this.key,
+    required this.asset,
+  });
+
+  final Key? key;
+
+  final CryptoAsset asset;
+
+  @override
+  String toString() {
+    return 'CryptoRouteArgs{key: $key, asset: $asset}';
+  }
 }
 
 /// generated route for
@@ -68,6 +105,20 @@ class ChartsRoute extends PageRouteInfo<void> {
         );
 
   static const String name = 'ChartsRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [HomeScreen]
+class HomeRoute extends PageRouteInfo<void> {
+  const HomeRoute({List<PageRouteInfo>? children})
+      : super(
+          HomeRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'HomeRoute';
 
   static const PageInfo<void> page = PageInfo<void>(name);
 }
@@ -112,55 +163,4 @@ class BottomAppBarHolderRoute extends PageRouteInfo<void> {
   static const String name = 'BottomAppBarHolderRoute';
 
   static const PageInfo<void> page = PageInfo<void>(name);
-}
-
-/// generated route for
-/// [HomeScreen]
-class HomeRoute extends PageRouteInfo<void> {
-  const HomeRoute({List<PageRouteInfo>? children})
-      : super(
-          HomeRoute.name,
-          initialChildren: children,
-        );
-
-  static const String name = 'HomeRoute';
-
-  static const PageInfo<void> page = PageInfo<void>(name);
-}
-
-/// generated route for
-/// [CryptoScreen]
-class CryptoRoute extends PageRouteInfo<CryptoRouteArgs> {
-  CryptoRoute({
-    Key? key,
-    required CryptoAsset asset,
-    List<PageRouteInfo>? children,
-  }) : super(
-          CryptoRoute.name,
-          args: CryptoRouteArgs(
-            key: key,
-            asset: asset,
-          ),
-          initialChildren: children,
-        );
-
-  static const String name = 'CryptoRoute';
-
-  static const PageInfo<CryptoRouteArgs> page = PageInfo<CryptoRouteArgs>(name);
-}
-
-class CryptoRouteArgs {
-  const CryptoRouteArgs({
-    this.key,
-    required this.asset,
-  });
-
-  final Key? key;
-
-  final CryptoAsset asset;
-
-  @override
-  String toString() {
-    return 'CryptoRouteArgs{key: $key, asset: $asset}';
-  }
 }

@@ -6,7 +6,7 @@ part of 'firebase_auth_controller.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$authControllerHash() => r'a552fc75c10622d447874b8d60d7747de969660f';
+String _$authControllerHash() => r'b35b8a3ccc80e7a6463d4fd4cfab23ff1829c9ec';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -125,7 +125,7 @@ class AuthControllerProvider extends AutoDisposeAsyncNotifierProviderImpl<
 }
 
 String _$anonymousButtonControllerHash() =>
-    r'8c777bcba8a6f9d36eafe6f9b99d5bec1923fc2c';
+    r'5d90d20b2e1b9d3aa874d0a412b33aafbf579811';
 
 abstract class _$AnonymousButtonController
     extends BuildlessAutoDisposeAsyncNotifier<void> {
