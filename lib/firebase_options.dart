@@ -17,7 +17,10 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      return web;
+      throw UnsupportedError(
+        'DefaultFirebaseOptions have not been configured for web - '
+        'you can reconfigure this by running the FlutterFire CLI again.',
+      );
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -25,7 +28,10 @@ class DefaultFirebaseOptions {
       case TargetPlatform.iOS:
         return ios;
       case TargetPlatform.macOS:
-        return macos;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for macos - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       case TargetPlatform.windows:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for windows - '
@@ -43,16 +49,6 @@ class DefaultFirebaseOptions {
     }
   }
 
-  static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyAZ00qullOco9P7VIOa8jE923Tmcxc0n-M',
-    appId: '1:137557676548:web:7433556834855bc0645b51',
-    messagingSenderId: '137557676548',
-    projectId: 'crypto-analytics-133e5',
-    authDomain: 'crypto-analytics-133e5.firebaseapp.com',
-    storageBucket: 'crypto-analytics-133e5.appspot.com',
-    measurementId: 'G-WGNCXMR371',
-  );
-
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyD3K_UGTS6FSamsFcvN1c--zXcTfM01gW0',
     appId: '1:137557676548:android:b1427c6c8c215b65645b51',
@@ -69,15 +65,5 @@ class DefaultFirebaseOptions {
     storageBucket: 'crypto-analytics-133e5.appspot.com',
     iosClientId: '137557676548-rr09teq57febljusaq24k0t89qsa9cca.apps.googleusercontent.com',
     iosBundleId: 'com.example.cryptoAnalytics',
-  );
-
-  static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyDkhY3Wqna-e213gGMjWZ8Us5e1Jbc_ruY',
-    appId: '1:137557676548:ios:6205b07e0b6b21c0645b51',
-    messagingSenderId: '137557676548',
-    projectId: 'crypto-analytics-133e5',
-    storageBucket: 'crypto-analytics-133e5.appspot.com',
-    iosClientId: '137557676548-024slpqe0vckt2bj68blugmdm7f4b9n8.apps.googleusercontent.com',
-    iosBundleId: 'com.example.cryptoAnalytics.RunnerTests',
   );
 }

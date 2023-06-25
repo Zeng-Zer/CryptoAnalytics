@@ -2,8 +2,8 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../features/alerts/alerts_screen.dart';
 import '../features/authentication/presentation/sign_in_wrapper_screen.dart';
-import '../features/charts/charts_screen.dart';
 import '../features/crypto_info/presentation/crypto_screen.dart';
 import '../features/crypto_list/domain/crypto_asset.dart';
 import '../features/crypto_list/presentation/home_screen.dart';
@@ -30,7 +30,7 @@ class AppRouter extends _$AppRouter {
           page: BottomAppBarHolderRoute.page,
           children: [
             AutoRoute(page: HomeRoute.page),
-            AutoRoute(page: ChartsRoute.page),
+            AutoRoute(page: AlertsRoute.page),
             AutoRoute(page: ProfileRoute.page),
           ],
         ),

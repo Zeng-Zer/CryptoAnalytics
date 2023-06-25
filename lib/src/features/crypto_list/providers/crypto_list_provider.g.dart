@@ -23,7 +23,7 @@ final fetchCryptoIdentifiersProvider =
 );
 
 typedef FetchCryptoIdentifiersRef = FutureProviderRef<List<CryptoIdentifier>>;
-String _$searchAssetsHash() => r'6e6bef0846f71b07f1ae9fd79853ce4679154e5b';
+String _$searchAssetsHash() => r'7d309ec53231d9453641c700ccb25efbb3ecee6e';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -60,11 +60,13 @@ class SearchAssetsFamily extends Family<AsyncValue<List<CryptoAsset>>> {
   /// See also [searchAssets].
   SearchAssetsProvider call({
     String? search,
+    bool favoriteOnly = false,
     int limit = 100,
     int offset = 0,
   }) {
     return SearchAssetsProvider(
       search: search,
+      favoriteOnly: favoriteOnly,
       limit: limit,
       offset: offset,
     );
@@ -76,6 +78,7 @@ class SearchAssetsFamily extends Family<AsyncValue<List<CryptoAsset>>> {
   ) {
     return call(
       search: provider.search,
+      favoriteOnly: provider.favoriteOnly,
       limit: provider.limit,
       offset: provider.offset,
     );
@@ -102,12 +105,14 @@ class SearchAssetsProvider
   /// See also [searchAssets].
   SearchAssetsProvider({
     this.search,
+    this.favoriteOnly = false,
     this.limit = 100,
     this.offset = 0,
   }) : super.internal(
           (ref) => searchAssets(
             ref,
             search: search,
+            favoriteOnly: favoriteOnly,
             limit: limit,
             offset: offset,
           ),
@@ -123,6 +128,7 @@ class SearchAssetsProvider
         );
 
   final String? search;
+  final bool favoriteOnly;
   final int limit;
   final int offset;
 
@@ -130,6 +136,7 @@ class SearchAssetsProvider
   bool operator ==(Object other) {
     return other is SearchAssetsProvider &&
         other.search == search &&
+        other.favoriteOnly == favoriteOnly &&
         other.limit == limit &&
         other.offset == offset;
   }
@@ -138,6 +145,7 @@ class SearchAssetsProvider
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
     hash = _SystemHash.combine(hash, search.hashCode);
+    hash = _SystemHash.combine(hash, favoriteOnly.hashCode);
     hash = _SystemHash.combine(hash, limit.hashCode);
     hash = _SystemHash.combine(hash, offset.hashCode);
 

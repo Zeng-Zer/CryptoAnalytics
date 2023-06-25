@@ -25,12 +25,6 @@ abstract class _$AppRouter extends RootStackRouter {
         ),
       );
     },
-    ChartsRoute.name: (routeData) {
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: const ChartsScreen(),
-      );
-    },
     HomeRoute.name: (routeData) {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
@@ -53,6 +47,12 @@ abstract class _$AppRouter extends RootStackRouter {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
         child: const BottomAppBarHolderScreen(),
+      );
+    },
+    AlertsRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const AlertsScreen(),
       );
     },
   };
@@ -93,20 +93,6 @@ class CryptoRouteArgs {
   String toString() {
     return 'CryptoRouteArgs{key: $key, asset: $asset}';
   }
-}
-
-/// generated route for
-/// [ChartsScreen]
-class ChartsRoute extends PageRouteInfo<void> {
-  const ChartsRoute({List<PageRouteInfo>? children})
-      : super(
-          ChartsRoute.name,
-          initialChildren: children,
-        );
-
-  static const String name = 'ChartsRoute';
-
-  static const PageInfo<void> page = PageInfo<void>(name);
 }
 
 /// generated route for
@@ -161,6 +147,20 @@ class BottomAppBarHolderRoute extends PageRouteInfo<void> {
         );
 
   static const String name = 'BottomAppBarHolderRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [AlertsScreen]
+class AlertsRoute extends PageRouteInfo<void> {
+  const AlertsRoute({List<PageRouteInfo>? children})
+      : super(
+          AlertsRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'AlertsRoute';
 
   static const PageInfo<void> page = PageInfo<void>(name);
 }

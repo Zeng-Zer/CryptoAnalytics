@@ -9,6 +9,7 @@ import '../../../data_exception.dart';
 import '../../../repositories/crypto_repository.dart';
 import '../../../utils/extensions.dart';
 import '../../../utils/ref_extensions.dart';
+import '../../crypto_info/providers/crypto_favorite_provider.dart';
 import '../../crypto_list/domain/crypto_asset.dart';
 import '../../crypto_list/domain/crypto_identifier.dart';
 
@@ -39,13 +40,24 @@ Future<List<CryptoIdentifier>> fetchCryptoIdentifiers(FetchCryptoIdentifiersRef 
 Future<List<CryptoAsset>> searchAssets(
   SearchAssetsRef ref, {
   String? search,
+  bool favoriteOnly = false,
   int limit = 100,
   int offset = 0,
 }) async {
-  // print('searchAssets $search');
-  searchId() async {
-    if (search == null || search.isEmpty) return null;
-    return (await ref.watch(fetchCryptoIdentifiersProvider.future))
+  searchIds() async {
+    if (!favoriteOnly && (search == null || search.isEmpty)) {
+      return null;
+    }
+    final favorites = await ref.watch(favoritesProvider.future);
+    // filter favorites ids
+    final identifiers = (await ref.watch(fetchCryptoIdentifiersProvider.future))
+        .where((identifier) => !favoriteOnly || favorites.contains(identifier.symbol));
+
+    if (search == null || search.isEmpty) {
+      return identifiers.map((identifier) => identifier.id).toSet();
+    }
+
+    return identifiers
         .where((identifier) =>
             identifier.symbol.toLowerCase().startsWith(search.toLowerCase()) ||
             identifier.name?.toLowerCase().startsWith(search.toLowerCase()) == true)
@@ -55,7 +67,7 @@ Future<List<CryptoAsset>> searchAssets(
 
   final result = await ref
       .read(cryptoRepositoryProvider)
-      .fetchAssets(ids: await searchId(), limit: limit, offset: offset)
+      .fetchAssets(ids: await searchIds(), limit: limit, offset: offset)
       .flatMap((assets) => _addAssetLogos(ref, assets))
       .unwrap();
 

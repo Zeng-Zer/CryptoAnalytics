@@ -92,6 +92,7 @@ class SignForm extends HookConsumerWidget {
     buildSubmitButton() {
       final authCtrlProvider = authControllerProvider(signState: signState);
       final authController = ref.watch(authCtrlProvider);
+      final submitLabel = signState == SignState.signIn ? 'Login' : 'Sign up';
 
       signUpOrIn(String email, String password) {
         final notifier = ref.read(authCtrlProvider.notifier);
@@ -117,8 +118,8 @@ class SignForm extends HookConsumerWidget {
           ),
           child: Center(
             child: authController.map(
-              data: (_) => const Text('Login', textAlign: TextAlign.center),
-              error: (e) => const Text('Login', textAlign: TextAlign.center),
+              data: (_) => Text(submitLabel, textAlign: TextAlign.center),
+              error: (e) => Text(submitLabel, textAlign: TextAlign.center),
               loading: (_) =>
                   const SizedBox(height: 20, width: 20, child: CircularProgressIndicator()),
             ),

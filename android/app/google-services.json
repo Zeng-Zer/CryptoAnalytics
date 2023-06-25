@@ -31,10 +31,10 @@
               "client_type": 3
             },
             {
-              "client_id": "137557676548-rr09teq57febljusaq24k0t89qsa9cca.apps.googleusercontent.com",
+              "client_id": "137557676548-024slpqe0vckt2bj68blugmdm7f4b9n8.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.example.cryptoAnalytics"
+                "bundle_id": "com.example.cryptoAnalytics.RunnerTests"
               }
             }
           ]

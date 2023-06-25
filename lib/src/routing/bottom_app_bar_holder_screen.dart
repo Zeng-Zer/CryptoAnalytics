@@ -14,7 +14,7 @@ class BottomAppBarHolderScreen extends StatelessWidget {
     return AutoTabsScaffold(
       routes: const [
         HomeRoute(),
-        ChartsRoute(),
+        AlertsRoute(),
         ProfileRoute(),
       ],
       bottomNavigationBuilder: (_, tabsRouter) => NavigationBar(
@@ -27,8 +27,8 @@ class BottomAppBarHolderScreen extends StatelessWidget {
             label: 'Home',
           ),
           NavigationDestination(
-            icon: Icon(Icons.bar_chart),
-            label: 'Charts',
+            icon: Icon(Icons.campaign),
+            label: 'Alerts',
           ),
           NavigationDestination(
             icon: Icon(Icons.person),

@@ -10,32 +10,39 @@ import '../../../constants.dart';
 import '../../../routing/app_router.dart';
 import '../../../theme.dart';
 import '../../../utils/extensions.dart';
+import '../../crypto_info/providers/crypto_favorite_provider.dart';
 import '../domain/crypto_asset.dart';
 import '../providers/crypto_list_provider.dart';
 import 'crypto_price_change.dart';
 
-// final previousSearchProvider = StateProvider.autoDispose<String>((ref) {
-//   return '';
-// });
-//
 class CryptoAssetList extends HookConsumerWidget {
   const CryptoAssetList({
     Key? key,
     required this.search,
     required this.onTap,
+    required this.favoriteOnly,
   }) : super(key: key);
 
   final String search;
   final void Function() onTap;
+  final bool favoriteOnly;
 
+  final favoriteWidth = 50.0;
   final nameWidth = 170.0;
   final priceWidth = 110.0;
   final priceChangeWidth = 110.0;
   final volumeWidth = 110.0;
   final marketCapWidth = 90.0;
 
+  final favoriteIconSize = 16.0;
+
   Widget buildHeader() {
     final headerStyle = textTheme().titleSmall?.copyWith(color: blueGrey.shade500);
+
+    buildFavoriteCol() => SizedBox(
+          width: favoriteWidth,
+          child: Icon(Icons.favorite, color: blueGrey, size: favoriteIconSize),
+        );
 
     buildHeaderCol(String colName, double width) => Container(
           width: width,
@@ -45,6 +52,7 @@ class CryptoAssetList extends HookConsumerWidget {
 
     return Row(
       children: [
+        buildFavoriteCol(),
         buildHeaderCol('Name', nameWidth),
         buildHeaderCol('Price', priceWidth),
         buildHeaderCol('Price Change', priceChangeWidth),
@@ -54,7 +62,12 @@ class CryptoAssetList extends HookConsumerWidget {
     );
   }
 
-  Widget buildRow(BuildContext context, CryptoAsset asset, TextStyle? contentStyle) {
+  Widget buildRow(
+    BuildContext context,
+    WidgetRef ref,
+    CryptoAsset asset,
+    TextStyle? contentStyle,
+  ) {
     final nameRow = Material(
       color: Colors.transparent,
       child: InkWell(
@@ -89,8 +102,36 @@ class CryptoAssetList extends HookConsumerWidget {
       ),
     );
 
+    buildFavoriteButton() {
+      final favoriteCtrl = ref.watch(cryptoFavoriteProvider(asset.symbol));
+      final isFavorite = favoriteCtrl.valueOrNull;
+      final onPressed = isFavorite == null
+          ? null
+          : () {
+              if (isFavorite) {
+                ref.read(cryptoFavoriteProvider(asset.symbol).notifier).remove();
+              } else {
+                ref.read(cryptoFavoriteProvider(asset.symbol).notifier).add();
+              }
+            };
+      return IconButton(
+        visualDensity: VisualDensity.compact,
+        iconSize: favoriteIconSize,
+        onPressed: onPressed,
+        icon: Icon(
+          isFavorite == true ? Icons.favorite : Icons.favorite_border,
+          color: blueGrey,
+        ),
+      );
+    }
+
     return Row(
       children: [
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 6),
+          width: favoriteWidth,
+          child: buildFavoriteButton(),
+        ),
         Container(
           padding: const EdgeInsets.only(right: 16),
           width: nameWidth,
@@ -142,8 +183,8 @@ class CryptoAssetList extends HookConsumerWidget {
       itemBuilder: (context, index) {
         final page = index ~/ limit;
         final pageIndex = index % limit;
-        final assets =
-            ref.watch(searchAssetsProvider(search: search, limit: limit, offset: page * limit));
+        final assets = ref.watch(searchAssetsProvider(
+            search: search, favoriteOnly: favoriteOnly, limit: limit, offset: page * limit));
         return assets.when(
           error: (error, stackTrace) => Center(child: Text(error.toString())),
           loading: () {
@@ -160,7 +201,7 @@ class CryptoAssetList extends HookConsumerWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 if (index > 0) const Divider(),
-                buildRow(context, assets[pageIndex], contentStyle),
+                buildRow(context, ref, assets[pageIndex], contentStyle),
               ],
             );
           },
@@ -172,17 +213,17 @@ class CryptoAssetList extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Future(() {
-    //   if (ref.watch(previousSearchProvider) != search) {
-    //     ref.read(previousSearchProvider.notifier).state = search;
-    //   }
-    // });
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: PaddedContainer(
         margin: sideMargin,
         child: SizedBox(
-          width: nameWidth + priceWidth + priceChangeWidth + volumeWidth + marketCapWidth,
+          width: favoriteWidth +
+              nameWidth +
+              priceWidth +
+              priceChangeWidth +
+              volumeWidth +
+              marketCapWidth,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
